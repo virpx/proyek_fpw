@@ -7,34 +7,20 @@ const Register = () => {
   const navigate = useNavigate();
   const host = "http://localhost:3000";
 
-  const [data, setData] = useState([]);
-  const [loading, setIsLoading] = useState(false);
-
-  const fetchData = async () => {
-    setIsLoading(true);
-    const getData = await axios.get(`${host}/data`);
-    setData(getData.data.data);
-    console.log(getData.data.data);
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const handleData = async (data) => {
-    // try {
-    //   const result = await axios.post(`${host}/register`, {
-    //     email: data.email,
-    //     name: data.name,
-    //     password: data.password,
-    //     cpassword: data.cpassword,
-    //   });
-    //   alert(result.data.message);
-    //   navigate("/projects");
-    // } catch (error) {
-    //   alert(error.response.data.message);
-    // }
+    try {
+      const result = await axios.post(`${host}/register`, {
+        email: data.email,
+        name: data.name,
+        password: data.password,
+        cpassword: data.cpassword,
+        role: data.role,
+      });
+      alert(result.data.message);
+      navigate("/login");
+    } catch (error) {
+      alert(error.response.data.message);
+    }
   };
 
   return (
@@ -43,8 +29,8 @@ const Register = () => {
         className="card flex-row flex-wrap containerregister justify-content-center"
         style={{ width: "fit-content" }}
       >
-        <div className="card-block text-white">
-          <h2 className="text-center">Login</h2>
+        <div className="card-block">
+          <h2 className="text-center">Register</h2>
           <form onSubmit={handleSubmit(handleData)}>
             <div className="form-group">
               <label>Email:</label>
@@ -85,6 +71,15 @@ const Register = () => {
                 required
                 {...register("cpassword")}
               />
+            </div>
+
+            <div className="form-group">
+              <label>Teacher/Student:</label>
+              <select class="form-select" required {...register("role")}>
+                <option selected>Open this to select Teacher/Student</option>
+                <option value="0">Student</option>
+                <option value="1">Teacher</option>
+              </select>
             </div>
 
             <button

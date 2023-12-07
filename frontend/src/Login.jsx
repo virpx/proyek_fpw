@@ -8,32 +8,25 @@ const Login = () => {
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
 
-  const [data, setData] = useState([]);
-  const [loading, setIsLoading] = useState(false);
-
-  const fetchData = async () => {
-    setIsLoading(true);
-    const getData = await axios.get(`${host}/data`);
-    setData(getData.data.data);
-    // console.log(getData.data.data);
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const handleData = async (data) => {
-    // try {
-    //   const result = await axios.post(`${host}/login`, {
-    //     email: data.email,
-    //     password: data.password,
-    //   });
-    //   alert(result.data.message);
-    //   navigate("/projects");
-    // } catch (error) {
-    //   alert(error.response.data.message);
-    // }
+    try {
+      const result = await axios
+        .post(`${host}/login`, {
+          email: data.email,
+          password: data.password,
+        })
+        .then((response) => {
+          if (response.data.token) {
+            localStorage.setItem("user", JSON.stringify(response.data));
+          }
+
+          return response.data;
+        });
+      alert(result.message);
+      navigate("/");
+    } catch (error) {
+      alert(error.response.data.message);
+    }
   };
 
   return (
@@ -42,7 +35,7 @@ const Login = () => {
         className="card flex-row flex-wrap containerregister justify-content-center"
         style={{ width: "fit-content" }}
       >
-        <div className="card-block text-white">
+        <div className="card-block">
           <h2 className="text-center">Login</h2>
           <form onSubmit={handleSubmit(handleData)}>
             <div className="form-group">
