@@ -13,9 +13,12 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
+import authHeader from "./services/auth-header";
+import { useEffect } from "react";
+import "./css/navbar.css";
 
 const pages = ["Home", "Courses", "My Courses"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Profile", "Account", "Logout"];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -44,9 +47,32 @@ function Navbar() {
     if (page == "Home") {
       navigate("/");
     } else if (page == "Courses") {
-      navigate("/Courses");
+      navigate("/courses");
     } else if (page == "My Courses") {
-      navigate("/MyCourses");
+      navigate("/mycourses");
+    }
+  };
+
+  const [sudahlogin, setSudahLogin] = React.useState(false);
+  const auth = () => {
+    var header = authHeader();
+    if (header != null) {
+      setSudahLogin(true);
+    }
+  };
+
+  useEffect(() => {
+    auth();
+  }, []);
+
+  const handleProfileMenu = (setting) => {
+    if (setting == "Logout") {
+      localStorage.removeItem("user");
+      window.location.reload();
+    } else if (setting == "Profile") {
+      navigate("/profile");
+    } else if (setting == "Account") {
+      navigate("/account");
     }
   };
 
@@ -72,7 +98,7 @@ function Navbar() {
               navigate("/");
             }}
           >
-            INNOSPHERELEARN
+            <div style={{ color: "#F57C00" }}>INNOSPHERE</div>LEARN
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -126,7 +152,7 @@ function Navbar() {
               textDecoration: "none",
             }}
           >
-            INNOSPHERELEARN
+            <div style={{ color: "#F57C00" }}>INNOSPHERE</div>LEARN
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
@@ -143,11 +169,38 @@ function Navbar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {/* <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Profile User" src="" />
-              </IconButton>
-            </Tooltip> */}
+            {sudahlogin && (
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Profile User" src="" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {!sudahlogin && (
+              <Button
+                variant="outlined"
+                size="medium"
+                id="btnrl"
+                onClick={() => {
+                  navigate("/register");
+                }}
+              >
+                Register
+              </Button>
+            )}
+            {!sudahlogin && (
+              <Button
+                variant="outlined"
+                size="medium"
+                id="btnrl"
+                style={{ marginLeft: "10px" }}
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Login
+              </Button>
+            )}
             <Menu
               sx={{ mt: "45px" }}
               id="menu-appbar"
@@ -165,8 +218,15 @@ function Navbar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting}>
+                  <Typography
+                    textAlign="center"
+                    onClick={() => {
+                      handleProfileMenu(setting);
+                    }}
+                  >
+                    {setting}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
