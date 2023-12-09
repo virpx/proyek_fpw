@@ -20,6 +20,7 @@ const Login = () => {
         .then((response) => {
           if (response.data.token) {
             localStorage.setItem("user", JSON.stringify(response.data));
+            localStorage.setItem("storedTime", Date.now().toString());
           }
 
           return response.data;

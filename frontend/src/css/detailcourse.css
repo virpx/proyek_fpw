@@ -34,7 +34,8 @@
 }
 
 .form-button {
-  margin: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;

@@ -57,7 +57,18 @@ function Navbar() {
   const auth = () => {
     var header = authHeader();
     if (header != null) {
-      setSudahLogin(true);
+      const storedTime = localStorage.getItem("storedTime");
+      const expirationTimeInSeconds = 3600;
+      if (
+        storedTime &&
+        (Date.now() - parseInt(storedTime)) / 1000 < expirationTimeInSeconds
+      ) {
+        console.log("Session OK.");
+        setSudahLogin(true);
+      } else {
+        alert("Session has expired or does not exist. Please Login again.");
+        localStorage.clear();
+      }
     }
   };
 
@@ -68,6 +79,7 @@ function Navbar() {
   const handleProfileMenu = (setting) => {
     if (setting == "Logout") {
       localStorage.removeItem("user");
+      localStorage.removeItem("storedTime");
       window.location.reload();
     } else if (setting == "Profile") {
       navigate("/profile");

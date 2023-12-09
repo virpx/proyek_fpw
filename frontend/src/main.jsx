@@ -12,11 +12,12 @@ import Register from "./Register";
 import axios from "axios";
 import Index from "./Index";
 import Courses from "./Student/Courses";
-import MyCourses from "./Student/MyCourses";
+import MyCourses from "./Student/MyCourses.jsx";
 import Faq from "./Index/Faq.tsx";
 import Contact from "./Index/Contact.tsx";
 import About from "./Index/About.tsx";
 import DetailCourse from "./Student/DetailCourse.jsx";
+import Class from "./Student/Class.jsx";
 
 const host = "http://localhost:3000";
 
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: "/mycourses",
         element: <MyCourses />,
+      },
+      {
+        path: "/mycourses/class",
+        element: <Class />,
       },
       {
         path: "/faq",

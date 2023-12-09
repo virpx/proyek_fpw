@@ -55,7 +55,7 @@ const Error = () => {
             <p className="lead">The page you’re looking for doesn’t exist.</p>
             <button
               className="btn"
-              style={{ backgroundColor: "#1A2138", color: "white" }}
+              style={{ backgroundColor: "#f57c00", color: "white" }}
               onClick={() => {
                 navigate(-1);
               }}
