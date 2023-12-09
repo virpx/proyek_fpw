@@ -18,6 +18,7 @@ import Contact from "./Index/Contact.tsx";
 import About from "./Index/About.tsx";
 import DetailCourse from "./Student/DetailCourse.jsx";
 import Class from "./Student/Class.jsx";
+import Homeadmin from "./admin/Homeadmin.jsx";
 
 const host = "http://localhost:3000";
 
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
         path: "/contact",
         element: <Contact />,
       },
+      {
+        path:"/admin",
+        element:<Homeadmin></Homeadmin>
+      }
     ],
   },
 ]);
