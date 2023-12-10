@@ -1,5 +1,5 @@
 import Navbar from "../Navbar";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import authHeader from "../services/auth-header";
 import { useEffect, useState } from "react";
 import Footer from "../Index/Footer";
@@ -14,36 +14,9 @@ const MyCourses = () => {
     }
   };
 
-  const [courses, setCourses] = useState([
-    {
-      name: "mat",
-      price: 49.99,
-      teacher: "John Doe",
-      description: "Lorem ipsum...",
-      date: "2023-01-01",
-    },
-    {
-      name: "koding",
-      price: 1.99,
-      teacher: "John Doe",
-      description: "Lorem ipsum...",
-      date: "2023-01-02",
-    },
-    {
-      name: "koding",
-      price: 1.99,
-      teacher: "John Doe",
-      description: "Lorem ipsum...",
-      date: "2023-01-02",
-    },
-    {
-      name: "koding",
-      price: 1.99,
-      teacher: "John Doe",
-      description: "Lorem ipsum...",
-      date: "2023-01-02",
-    },
-  ]);
+  const data = useLoaderData();
+
+  const [courses, setCourses] = useState(data.listkursus);
 
   useEffect(() => {
     auth();
@@ -54,22 +27,25 @@ const MyCourses = () => {
       <Navbar />
 
       <div className="course-containerM">
-        {courses.map((course, index) => (
-          <div
-            key={course.name}
-            className="course-cardM"
-            onClick={() => {
-              navigate("/mycourses/class");
-            }}
-          >
-            <div className="course-card-textM">
-              <h2>{course.name}</h2>
-              <p>Price: ${course.price.toFixed(2)}</p>
-              <p>Teacher: {course.teacher}</p>
-              <p>{course.description}</p>
+        {courses.length > 0 &&
+          courses.map((course, index) => (
+            <div
+              key={course.nama_kursus}
+              className="course-cardM"
+              onClick={() => {
+                navigate("/mycourses/class");
+              }}
+            >
+              <div className="course-card-textM">
+                <h2>{course.kursus.nama_kursus}</h2>
+                <p>Price: ${course.kursus.harga.toFixed(2)}</p>
+                {/* <p>Teacher: {course.teacher}</p> */}
+                <p>{course.kursus.kategori}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+
+        {courses.length == 0 && <div>Anda Belum Beli Kursus Apapun</div>}
       </div>
 
       <Footer />

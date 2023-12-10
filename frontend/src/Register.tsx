@@ -19,7 +19,7 @@ const Register = () => {
         role: data.role,
       });
       alert(result.data.message);
-      navigate("/login-user");
+      navigate("/login");
     } catch (error) {
       alert(error.response.data.message);
     }

@@ -19,6 +19,7 @@ import About from "./Index/About.tsx";
 import DetailCourse from "./Student/DetailCourse.jsx";
 import Class from "./Student/Class.jsx";
 import Homeadmin from "./admin/Homeadmin.jsx";
+import authHeader from "./services/auth-header";
 
 const host = "http://localhost:3000";
 
@@ -43,14 +44,26 @@ const router = createBrowserRouter([
       {
         path: "/courses",
         element: <Courses />,
+        loader: async () => {
+          const result = await axios.get(`${host}/kursus`);
+          return { kursus: result.data.kursus };
+        },
       },
       {
         path: "/course/detail",
         element: <DetailCourse />,
       },
       {
-        path: "/mycourses",
+        path: "/mycourses/:_id",
         element: <MyCourses />,
+        loader: async ({ params }) => {
+          const result = await axios.get(`${host}/listKursus`, {
+            headers: {
+              "x-auth-token": authHeader()["x-access-token"],
+            },
+          });
+          return { listkursus: result.data.listkursus };
+        },
       },
       {
         path: "/mycourses/class",
@@ -69,9 +82,9 @@ const router = createBrowserRouter([
         element: <Contact />,
       },
       {
-        path:"/admin",
-        element:<Homeadmin></Homeadmin>
-      }
+        path: "/admin",
+        element: <Homeadmin></Homeadmin>,
+      },
     ],
   },
 ]);

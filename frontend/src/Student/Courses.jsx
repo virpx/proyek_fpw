@@ -1,59 +1,30 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import Footer from "../Index/Footer";
 import Navbar from "../Navbar";
 import "../css/course.css";
 
 const Courses = () => {
   const navigate = useNavigate();
-
+  const data = useLoaderData();
   const [searchInput, setSearchInput] = useState("");
   const [sortBy, setSortBy] = useState("");
-  const [courses, setCourses] = useState([
-    {
-      name: "mat",
-      price: 49.99,
-      teacher: "John Doe",
-      description: "Lorem ipsum...",
-      date: "2023-01-01",
-    },
-    {
-      name: "koding",
-      price: 1.99,
-      teacher: "John Doe",
-      description: "Lorem ipsum...",
-      date: "2023-01-02",
-    },
-    {
-      name: "koding",
-      price: 1.99,
-      teacher: "John Doe",
-      description: "Lorem ipsum...",
-      date: "2023-01-02",
-    },
-    {
-      name: "koding",
-      price: 1.99,
-      teacher: "John Doe",
-      description: "Lorem ipsum...",
-      date: "2023-01-02",
-    },
-  ]);
+  const [courses, setCourses] = useState(data.kursus);
 
   const filteredAndSortedCourses = courses
     .filter((course) =>
-      course.name.toLowerCase().includes(searchInput.toLowerCase())
+      course.nama_kursus.toLowerCase().includes(searchInput.toLowerCase())
     )
     .sort((a, b) => {
       switch (sortBy) {
         case "price-highest":
-          return b.price - a.price;
+          return b.harga - a.harga;
         case "price-lowest":
-          return a.price - b.price;
+          return a.harga - b.harga;
         case "newest":
-          return new Date(b.date) - new Date(a.date);
+          return new Date(b.createdAt) - new Date(a.createdAt);
         case "oldest":
-          return new Date(a.date) - new Date(b.date);
+          return new Date(a.createdAt) - new Date(b.createdAt);
         default:
           return 0;
       }
@@ -88,7 +59,7 @@ const Courses = () => {
             onChange={handleSortChange}
             style={{ height: "49px", width: "125px" }}
           >
-            <option value="">Sort by</option>
+            <option>Sort by</option>
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
             <option value="price-highest">Highest Price</option>
@@ -99,12 +70,12 @@ const Courses = () => {
 
       <div className="course-container">
         {filteredAndSortedCourses.map((course, index) => (
-          <div key={course.name} className="course-card">
+          <div key={course.nama_kursus} className="course-card">
             <div className="course-card-text">
-              <h2>{course.name}</h2>
-              <p>Price: ${course.price.toFixed(2)}</p>
-              <p>Teacher: {course.teacher}</p>
-              <p>{course.description}</p>
+              <h2>{course.nama_kursus}</h2>
+              <p>Price: ${course.harga.toFixed(2)}</p>
+              {/* <p>Teacher: {course.teacher}</p> */}
+              <p>{course.kategori}</p>
             </div>
             <button
               className="buy-button"

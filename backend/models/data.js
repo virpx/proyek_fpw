@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const komponenKursusSchema = new mongoose.Schema(
   {
     path: String,
-    type: String,
+    type: String, //quiz atau materi
   },
   {
     versionKey: false,

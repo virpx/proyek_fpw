@@ -49,7 +49,13 @@ function Navbar() {
     } else if (page == "Courses") {
       navigate("/courses");
     } else if (page == "My Courses") {
-      navigate("/mycourses");
+      var header = authHeader();
+      if (header !== null) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        navigate("/mycourses/" + user._id);
+      } else {
+        navigate("/login");
+      }
     }
   };
 
@@ -81,6 +87,7 @@ function Navbar() {
       localStorage.removeItem("user");
       localStorage.removeItem("storedTime");
       window.location.reload();
+      navigate("/");
     } else if (setting == "Profile") {
       navigate("/profile");
     } else if (setting == "Account") {

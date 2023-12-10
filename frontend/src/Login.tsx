@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./css/loginstudent.css";
 import React from "react";
+import authHeader from "./services/auth-header";
 
 const host = "http://localhost:3000";
 const Login = () => {
@@ -26,7 +27,24 @@ const Login = () => {
           return response.data;
         });
       alert(result.message);
-      navigate(-1);
+
+      if (
+        result.message == "You have successfully logged in to your account."
+      ) {
+        try {
+          const result = await axios.get(`${host}/activeUser`, {
+            headers: {
+              "x-auth-token": authHeader()["x-access-token"],
+            },
+          });
+
+          if (result.data.user[0].role == 0) {
+            navigate("/mycourses/" + result.data.user[0]._id);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
     } catch (error) {
       alert(error.response.data.message);
     }
