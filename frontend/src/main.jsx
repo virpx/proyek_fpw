@@ -20,6 +20,7 @@ import DetailCourse from "./Student/DetailCourse.jsx";
 import Class from "./Student/Class.jsx";
 import Homeadmin from "./admin/Homeadmin.jsx";
 import authHeader from "./services/auth-header";
+import Indexteacher from "./Teacher/Indexteacher.jsx";
 
 const host = "http://localhost:3000";
 
@@ -82,9 +83,13 @@ const router = createBrowserRouter([
         element: <Contact />,
       },
       {
-        path: "/admin",
-        element: <Homeadmin></Homeadmin>,
+        path:"/admin",
+        element:<Homeadmin></Homeadmin>
       },
+      {
+        path:"/teacher",
+        element:<Indexteacher></Indexteacher>
+      }
     ],
   },
 ]);
