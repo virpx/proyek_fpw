@@ -47,6 +47,7 @@ export default function Carousel() {
           <img
             src="https://www.qs.com/wp-content/uploads/2015/05/students-or-teenagers-with-laptop-and-tablet-computers.jpg"
             alt="Course Image"
+            id="imgcarousel"
           />
         </SwiperSlide>
         <SwiperSlide>
@@ -68,6 +69,7 @@ export default function Carousel() {
           <img
             src="https://www.hamline.edu/sites/default/files/styles/scale_width_1920/public/2023-07/commencement2018-127.20230712170626003.jpg?h=c7db29bb&itok=cMVL2AvZ"
             alt="Course Image"
+            id="imgcarousel"
           />
         </SwiperSlide>
         <SwiperSlide>
@@ -89,6 +91,7 @@ export default function Carousel() {
           <img
             src="https://storage.googleapis.com/wp-static/wp-ucp/2022/08/UCP-Video-Cover-Homepage.jpg"
             alt="Course Image"
+            id="imgcarousel"
           />
         </SwiperSlide>
         <SwiperSlide>
@@ -110,6 +113,7 @@ export default function Carousel() {
           <img
             src="https://www.hamline.edu/sites/default/files/styles/scale_width_1920/public/2023-07/fall_shoot_2021-491.jpg?h=5d170c9e&itok=e0W0Xc43"
             alt="Course Image"
+            id="imgcarousel"
           />
         </SwiperSlide>
       </Swiper>

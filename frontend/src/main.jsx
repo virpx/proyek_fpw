@@ -46,8 +46,26 @@ const router = createBrowserRouter([
         path: "/courses",
         element: <Courses />,
         loader: async () => {
-          const result = await axios.get(`${host}/kursus`);
-          return { kursus: result.data.kursus };
+          var header = authHeader();
+          if (header !== null) {
+            const result = await axios.get(`${host}/kursus`);
+            const result2 = await axios.get(`${host}/listKursus`, {
+              headers: {
+                "x-auth-token": authHeader()["x-access-token"],
+              },
+            });
+            return {
+              kursus: result.data.kursus,
+              listkursus: result2.data.listkursus,
+            };
+          } else {
+            const result = await axios.get(`${host}/kursus`);
+            const result2 = await axios.get(`${host}/kursus`);
+            return {
+              kursus: result.data.kursus,
+              listkursus: result2.data.kursus,
+            };
+          }
         },
       },
       {
@@ -67,8 +85,16 @@ const router = createBrowserRouter([
         },
       },
       {
-        path: "/mycourses/class",
+        path: "/mycourses/class/:id",
         element: <Class />,
+        loader: async ({ params }) => {
+          const result = await axios.get(`${host}/kursus/${params.id}`, {
+            headers: {
+              "x-auth-token": authHeader()["x-access-token"],
+            },
+          });
+          return { kursus: result.data.kursus };
+        },
       },
       {
         path: "/faq",
@@ -83,13 +109,13 @@ const router = createBrowserRouter([
         element: <Contact />,
       },
       {
-        path:"/admin",
-        element:<Homeadmin></Homeadmin>
+        path: "/admin",
+        element: <Homeadmin></Homeadmin>,
       },
       {
-        path:"/teacher",
-        element:<Indexteacher></Indexteacher>
-      }
+        path: "/teacher",
+        element: <Indexteacher></Indexteacher>,
+      },
     ],
   },
 ]);

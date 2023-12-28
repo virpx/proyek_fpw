@@ -1,22 +1,59 @@
 const mongoose = require("mongoose");
 
-const komponenKursusSchema = new mongoose.Schema(
+const materiKursusSchema = new mongoose.Schema(
   {
     path: String,
-    type: String, //quiz atau materi
   },
   {
     versionKey: false,
   }
 );
 
+const answerSchema = new mongoose.Schema(
+  {
+    text: {
+      type: String,
+      required: true,
+    },
+    isCorrect: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  {
+    versionKey: false,
+  }
+);
+
+const questionSchema = new mongoose.Schema(
+  {
+    question: {
+      type: String,
+      required: true,
+    },
+    answers: [answerSchema],
+    score: Number,
+  },
+  {
+    versionKey: false,
+  }
+);
+
+const quizSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  questions: [questionSchema],
+});
+
 const kursusSchema = new mongoose.Schema(
   {
     nama_kursus: String,
-    batas_waktu: Number, //dalam bulan
     kategori: String,
     harga: Number,
-    komponen_kursus: [komponenKursusSchema],
+    materi: [materiKursusSchema],
+    quiz: [quizSchema],
     createdAt: Date,
     updatedAt: Date,
   },
@@ -31,7 +68,7 @@ const userSchema = new mongoose.Schema(
     name: String,
     password: String,
     profile_path: String,
-    role: Number,
+    role: Number, //student 0 || teacher 1
     active: Number,
     createdAt: Date,
     updatedAt: Date,
@@ -41,10 +78,14 @@ const userSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "Kursus",
         },
-        start_enroll: Date,
-        stop_enroll: Date,
-        last_progress: Number,
-        current_index: Number,
+        last_progress: { type: Number, default: 1 },
+        current_index: { type: Number, default: 1 },
+        nilai_quiz: [
+          {
+            name: String,
+            score: Number,
+          },
+        ],
       },
     ],
   },
@@ -53,6 +94,25 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+const transactionSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  kursus: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Kursus",
+    required: true,
+  },
+  status: String,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const Transaction = mongoose.model("Transaction", transactionSchema);
 const Kursus = mongoose.model("Kursus", kursusSchema);
 const User = mongoose.model("User", userSchema);
 

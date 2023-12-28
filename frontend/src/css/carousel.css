@@ -45,7 +45,7 @@ body {
   position: relative;
 }
 
-img {
+#imgcarousel {
   filter: brightness(65%);
 }
 

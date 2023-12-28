@@ -50,6 +50,8 @@ function Navbar() {
       navigate("/courses");
     } else if (page == "My Courses") {
       var header = authHeader();
+      console.log(header);
+
       if (header !== null) {
         const user = JSON.parse(localStorage.getItem("user"));
         navigate("/mycourses/" + user._id);
@@ -69,11 +71,11 @@ function Navbar() {
         storedTime &&
         (Date.now() - parseInt(storedTime)) / 1000 < expirationTimeInSeconds
       ) {
-        console.log("Session OK.");
         setSudahLogin(true);
       } else {
         alert("Session has expired or does not exist. Please Login again.");
         localStorage.clear();
+        handlePindahPage("Home");
       }
     }
   };
@@ -86,8 +88,7 @@ function Navbar() {
     if (setting == "Logout") {
       localStorage.removeItem("user");
       localStorage.removeItem("storedTime");
-      window.location.reload();
-      navigate("/");
+      handlePindahPage("Home");
     } else if (setting == "Profile") {
       navigate("/profile");
     } else if (setting == "Account") {

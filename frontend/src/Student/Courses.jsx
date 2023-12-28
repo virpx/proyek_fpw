@@ -10,7 +10,8 @@ const Courses = () => {
   const [searchInput, setSearchInput] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [courses, setCourses] = useState(data.kursus);
-
+  const [myCourses, setMyCourses] = useState(data.listkursus);
+  console.log(myCourses);
   const filteredAndSortedCourses = courses
     .filter((course) =>
       course.nama_kursus.toLowerCase().includes(searchInput.toLowerCase())
@@ -73,18 +74,35 @@ const Courses = () => {
           <div key={course.nama_kursus} className="course-card">
             <div className="course-card-text">
               <h2>{course.nama_kursus}</h2>
-              <p>Price: ${course.harga.toFixed(2)}</p>
+              <p>Price: Rp. {course.harga.toLocaleString()}</p>
               {/* <p>Teacher: {course.teacher}</p> */}
               <p>{course.kategori}</p>
             </div>
-            <button
-              className="buy-button"
-              onClick={() => {
-                navigate("/course/detail");
-              }}
-            >
-              Buy
-            </button>
+            {myCourses.map((e) => {
+              var ada = false;
+
+              if (e._id !== undefined) {
+                ada = true;
+              } else {
+                if (course._id == e.kursus._id) {
+                  ada = true;
+                  return <></>;
+                }
+              }
+
+              if (!ada) {
+                return (
+                  <button
+                    className="buy-button"
+                    onClick={() => {
+                      navigate("/course/detail");
+                    }}
+                  >
+                    Buy
+                  </button>
+                );
+              }
+            })}
           </div>
         ))}
       </div>

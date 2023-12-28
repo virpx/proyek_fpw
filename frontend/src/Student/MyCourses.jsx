@@ -17,7 +17,6 @@ const MyCourses = () => {
   const data = useLoaderData();
 
   const [courses, setCourses] = useState(data.listkursus);
-
   useEffect(() => {
     auth();
   }, []);
@@ -33,12 +32,11 @@ const MyCourses = () => {
               key={course.nama_kursus}
               className="course-cardM"
               onClick={() => {
-                navigate("/mycourses/class");
+                navigate("/mycourses/class/" + course.kursus._id);
               }}
             >
               <div className="course-card-textM">
                 <h2>{course.kursus.nama_kursus}</h2>
-                <p>Price: ${course.kursus.harga.toFixed(2)}</p>
                 {/* <p>Teacher: {course.teacher}</p> */}
                 <p>{course.kursus.kategori}</p>
               </div>

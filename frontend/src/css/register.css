@@ -33,7 +33,7 @@ label {
   font-size: 14px;
 }
 
-input {
+/* input {
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
@@ -42,7 +42,7 @@ input {
   background-color: #2a2f4e;
   color: white;
   outline: none;
-}
+} */
 
 .role-selector {
   margin-bottom: 20px;

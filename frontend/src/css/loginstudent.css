@@ -34,7 +34,10 @@ label {
   text-align: left;
 }
 
-input {
+#studentId,
+#password,
+#fullName,
+#email {
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
