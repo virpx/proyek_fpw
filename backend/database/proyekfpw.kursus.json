@@ -1,0 +1,112 @@
+[{
+  "_id": {
+    "$oid": "658d2879b7c7ce13929a0220"
+  },
+  "nama_kursus": "Matematika Dasar",
+  "kategori": "Matematika",
+  "harga": 100,
+  "materi": [
+    {
+      "path": "/Materi/materi_1_1.pdf",
+      "_id": {
+        "$oid": "658d2879b7c7ce13929a0221"
+      }
+    },
+    {
+      "path": "/Materi/materi_1_2.pdf",
+      "_id": {
+        "$oid": "658d2879b7c7ce13929a0222"
+      }
+    }
+  ],
+  "quiz": [
+    {
+      "name": "Sample Quiz",
+      "questions": [
+        {
+          "question": "Bilangan yang termasuk ke dalam bilangan real adalah...",
+          "answers": [
+            {
+              "text": "1, 2, 3, 4, 5",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0225"
+              }
+            },
+            {
+              "text": "0, -1, -2, -3, -4",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0226"
+              }
+            },
+            {
+              "text": "√2, √3, √5, √6",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0227"
+              }
+            },
+            {
+              "text": "π, e, i",
+              "isCorrect": true,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0228"
+              }
+            }
+          ],
+          "score": 10,
+          "_id": {
+            "$oid": "658d2879b7c7ce13929a0224"
+          }
+        },
+        {
+          "question": "Bilangan yang termasuk ke dalam bilangan real adalah...",
+          "answers": [
+            {
+              "text": "1, 2, 3, 4, 5",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0225"
+              }
+            },
+            {
+              "text": "0, -1, -2, -3, -4",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0226"
+              }
+            },
+            {
+              "text": "√2, √3, √5, √6",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0227"
+              }
+            },
+            {
+              "text": "π, e, i",
+              "isCorrect": true,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0228"
+              }
+            }
+          ],
+          "score": 10,
+          "_id": {
+            "$oid": "658d2879b7c7ce13929a0224"
+          }
+        }
+      ],
+      "_id": {
+        "$oid": "658d2879b7c7ce13929a0223"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-12-28T07:49:13.278Z"
+  },
+  "updatedAt": {
+    "$date": "2023-12-28T07:49:13.278Z"
+  }
+}]

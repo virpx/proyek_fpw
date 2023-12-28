@@ -1,0 +1,25 @@
+[
+  {
+    "_id": {
+      "$oid": "65759c821885fd85f8fc116f"
+    },
+    "email": "a@gmail.com",
+    "name": "a",
+    "password": "$2b$10$qjtCqghogTKedsr99EBwzOE9HOn.p4aX1jmpMCV2GUaZmke2lXgzS",
+    "profile_path": "/profiles/user1",
+    "role": 0,
+    "active": 1,
+    "createdAt": "2023-12-10T00:00:00.000Z",
+    "updatedAt": "2023-12-10T00:00:00.000Z",
+    "listkursus": [
+      {
+        "kursus": {
+          "$oid": "658d2879b7c7ce13929a0220"
+        },
+        "last_progress": 1,
+        "current_index": 1,
+        "nilai_quiz": []
+      }
+    ]
+  }
+]
