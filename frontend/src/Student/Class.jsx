@@ -4,6 +4,8 @@ import Footer from "../Index/Footer";
 import Navbar from "../Navbar";
 import "../css/class.css";
 import "../css/quiz.css";
+import "../css/coursereport.css";
+import "../css/courseassignment.css";
 import authHeader from "../services/auth-header";
 import axios from "axios";
 const host = "http://localhost:3000";
@@ -14,12 +16,14 @@ const Class = () => {
   const [courseInfo, setCourseInfo] = useState();
   const materiObjects = course.materi;
   const quizObjects = course.quiz;
+  const assignmentObjects = course.assignment;
 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentBoard, setCurrentBoard] = useState("material");
   const [currentUser, setUser] = useState();
   const totalPages = materiObjects.length;
   const [quiz, setQuiz] = useState(null);
+  const [assignment, setAssignment] = useState(null);
 
   const getCurrentCourseInfo = async () => {
     const getData = await axios.get(
@@ -41,6 +45,7 @@ const Class = () => {
       },
     });
     setUser(getData.data.user[0]);
+    console.log(getData.data.user[0]);
   };
 
   useEffect(() => {
@@ -125,19 +130,17 @@ const Class = () => {
             </div>
             <div
               onClick={() => {
+                setCurrentBoard("assignment");
+              }}
+            >
+              Assignment
+            </div>
+            <div
+              onClick={() => {
                 setCurrentBoard("report");
               }}
             >
               Report
-            </div>
-            <div
-              onClick={() => {
-                localStorage.removeItem("user");
-                localStorage.removeItem("storedTime");
-                navigate("/");
-              }}
-            >
-              Logout
             </div>
           </div>
 
@@ -172,7 +175,7 @@ const Class = () => {
             <div id="content">
               {quiz == null && (
                 <div>
-                  <h1 style={{ marginLeft: "10px" }}>List Quiz</h1>
+                  <h1 style={{ marginLeft: "10px" }}>Quiz List</h1>
                   {quizObjects.map((e, index) => {
                     return (
                       <div
@@ -292,7 +295,132 @@ const Class = () => {
               )}
             </div>
           )}
-          {currentBoard == "report" && <div id="content">ini report</div>}
+
+          {currentBoard == "assignment" && (
+            <div id="content">
+              {assignment == null && (
+                <div>
+                  <h1 style={{ marginLeft: "10px" }}>Assignment List</h1>
+                  {assignmentObjects.map((e, index) => {
+                    return (
+                      <div
+                        key={e.name}
+                        className="course-cardM"
+                        onClick={() => {
+                          setAssignment(index);
+                        }}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <div className="course-card-textM">
+                          <h2>{e.name}</h2>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {assignment != null && (
+                <div>
+                  <button
+                    id="submit-btn"
+                    type="button"
+                    onClick={() => {
+                      setAssignment(null);
+                    }}
+                  >
+                    Back
+                  </button>
+
+                  <div id="assignment-container">
+                    <h2>Assignment Information</h2>
+                    <div class="form-group">
+                      <label for="assignmentName">Assignment Name:</label>
+                      <div class="readonly-input" id="assignmentName">
+                        {assignmentObjects[assignment].name}
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="assignmentDescription">
+                        Assignment Description:
+                      </label>
+                      <div class="readonly-input" id="assignmentDescription">
+                        {assignmentObjects[assignment].desc}
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="fileUpload">
+                        Upload Your Assignment (PDF):
+                      </label>
+                      <input
+                        class="form-control"
+                        name="fileUpload"
+                        accept=".pdf"
+                        type="file"
+                        id="formFile"
+                        required
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <button id="submitBtn">Submit Assignment</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {currentBoard == "report" && (
+            <div id="content">
+              <div>
+                <h1 id="report-title">Student Score Report</h1>
+                <h2 style={{ color: "white" }}>Assignment Scores</h2>
+                <table className="score-table">
+                  <thead>
+                    <tr>
+                      <th>Assignment</th>
+                      <th>Score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Assignment 1</td>
+                      <td>85</td>
+                    </tr>
+                    <tr>
+                      <td>Assignment 2</td>
+                      <td>92</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <h2 style={{ color: "white" }}>Quiz Scores</h2>
+                <table className="score-table">
+                  <thead>
+                    <tr>
+                      <th>Quiz</th>
+                      <th>Score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentUser.listkursus.map((l) => {
+                      if (l.kursus === course._id) {
+                        return l.nilai_quiz.map((n, index) => (
+                          <tr key={index}>
+                            <td>{n.name}</td>
+                            <td>{n.score}</td>
+                          </tr>
+                        ));
+                      }
+                      return null;
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </>

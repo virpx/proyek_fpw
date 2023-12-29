@@ -51,6 +51,7 @@ const Courses = () => {
             placeholder="Search by name"
             value={searchInput}
             onChange={handleSearchInputChange}
+            id="search"
           />
         </div>
 

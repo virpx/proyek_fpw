@@ -337,13 +337,14 @@ app.post("/submitquiz", async (req, res) => {
       });
     }
   }
-  const newData = { name: filteredQuiz[0].name, score: score };
+  const newScore = (score / maxScore) * 100;
+  const newData = { name: filteredQuiz[0].name, score: newScore };
   const pushNilai = await User.updateOne(
     { _id: id_user, "listkursus.kursus": id_kursus },
     { $push: { "listkursus.$.nilai_quiz": newData } }
   );
   console.log(pushNilai);
-  return res.status(200).json({ score, maxScore });
+  return res.status(200).json({ score: newScore, maxScore: 100 });
 });
 
 app.listen(port, async () => {

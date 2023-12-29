@@ -47,6 +47,17 @@ const quizSchema = new mongoose.Schema({
   questions: [questionSchema],
 });
 
+const assignmentSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  desc: {
+    type: String,
+    required: true,
+  },
+});
+
 const kursusSchema = new mongoose.Schema(
   {
     nama_kursus: String,
@@ -54,6 +65,7 @@ const kursusSchema = new mongoose.Schema(
     harga: Number,
     materi: [materiKursusSchema],
     quiz: [quizSchema],
+    assignment: [assignmentSchema],
     createdAt: Date,
     updatedAt: Date,
   },
@@ -111,14 +123,23 @@ const transactionSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
 const tugasSchema = new mongoose.Schema({
-  tugas_id:mongoose.Schema.Types.ObjectId,
-  user_id:mongoose.Schema.Types.ObjectId,
-  path:String
-})
+  tugas_id: mongoose.Schema.Types.ObjectId,
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  path: String,
+  score: {
+    type: Number,
+    default: 0,
+  },
+});
+
 const Transaction = mongoose.model("Transaction", transactionSchema);
 const Kursus = mongoose.model("Kursus", kursusSchema);
 const User = mongoose.model("User", userSchema);
-const Tugas = mongoose.model("Tugas",tugasSchema);
+const Tugas = mongoose.model("Tugas", tugasSchema);
 
-module.exports = { Kursus, User,Tugas };
+module.exports = { Kursus, User, Tugas };
