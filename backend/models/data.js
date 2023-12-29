@@ -111,9 +111,14 @@ const transactionSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-
+const tugasSchema = new mongoose.Schema({
+  tugas_id:mongoose.Schema.Types.ObjectId,
+  user_id:mongoose.Schema.Types.ObjectId,
+  path:String
+})
 const Transaction = mongoose.model("Transaction", transactionSchema);
 const Kursus = mongoose.model("Kursus", kursusSchema);
 const User = mongoose.model("User", userSchema);
+const Tugas = mongoose.model("Tugas",tugasSchema);
 
-module.exports = { Kursus, User };
+module.exports = { Kursus, User,Tugas };

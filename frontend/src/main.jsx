@@ -21,6 +21,17 @@ import Class from "./Student/Class.jsx";
 import Homeadmin from "./admin/Homeadmin.jsx";
 import authHeader from "./services/auth-header";
 import Indexteacher from "./Teacher/Indexteacher.jsx";
+import Listkursus from "./Teacher/Listkursus.jsx";
+import AddCourse from "./Teacher/Addcourse.jsx";
+import Forumteacher from "./Teacher/Forumteacher.jsx";
+import Detailforumteacher from "./Teacher/Detailforumteacher.jsx";
+import Reportteacher from "./Teacher/Reportteacher.jsx";
+import Editcourse from "./Teacher/Editcourse.jsx";
+import Coursecenter from "./Teacher/Coursecenter.jsx";
+import Addmateri from "./Teacher/center/Addmateri.jsx";
+import Addtask from "./Teacher/center/Addtask.jsx";
+import Addquiz from "./Teacher/center/Addquiz.jsx";
+import Viewtaskupload from "./Teacher/center/Viewtaskupload.jsx";
 
 const host = "http://localhost:3000";
 
@@ -110,12 +121,76 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <Homeadmin></Homeadmin>,
+        element: <Homeadmin></Homeadmin>
       },
       {
-        path: "/teacher",
-        element: <Indexteacher></Indexteacher>,
-      },
+        path: "teacher",
+        children: [
+          {
+            index: true,
+            element: <Indexteacher></Indexteacher>,
+          },
+          {
+            path:"course",
+            children:[
+              {
+                index:true,
+                element:<Listkursus></Listkursus>
+              },
+              {
+                path:"add",
+                element:<AddCourse></AddCourse>
+              },
+              {
+                path:"edit/:id",
+                element:<Editcourse></Editcourse>
+              },
+              {
+                path:"center/:id",
+                children:[
+                  {
+                    index:true,
+                    element:<Coursecenter></Coursecenter>,
+                  },
+                  {
+                    path:"addtopic",
+                    element:<Addmateri></Addmateri>
+                  },
+                  {
+                    path:"addtask",
+                    element:<Addtask></Addtask>
+                  },
+                  {
+                    path:"addquiz",
+                    element:<Addquiz></Addquiz>
+                  },
+                  {
+                    path:"task/:id",
+                    element:<Viewtaskupload></Viewtaskupload>
+                  },
+                ]
+              }
+            ]
+          },
+          {
+            path:"report",
+            element:<Reportteacher></Reportteacher>
+          },
+          {
+            path:"forum",
+            children:[
+              {
+                index:true,
+                element:<Forumteacher></Forumteacher>
+              },
+              {
+                path:":id",
+                element:<Detailforumteacher></Detailforumteacher>
+              }
+            ]
+          }
+        ]
+      }
     ],
   },
 ]);
