@@ -3,174 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Submit Assignment</title>
-    <style>
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        margin: 20px;
-        background-color: #1a2138;
-        color: #fff;
-      }
-
-      #assignment-container {
-        max-width: 600px;
-        margin: auto;
-        background-color: #1a2138;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      }
-
-      .form-group {
-        margin-bottom: 20px;
-      }
-
-      label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 8px;
-      }
-
-      #assignmentName,
-      #assignmentDescription {
-        width: 100%;
-        padding: 12px;
-        box-sizing: border-box;
-        background-color: #2e354d;
-        border: 1px solid #3a4858;
-        color: #fff;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        transition: border-color 0.3s ease, background-color 0.3s ease;
-      }
-
-      #assignmentDescription {
-        height: 100px;
-      }
-
-      #fileInputWrapper {
-        position: relative;
-        overflow: hidden;
-        background-color: #f57c00;
-        color: #fff;
-        padding: 12px 15px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        display: inline-block;
-        transition: background-color 0.3s ease;
-      }
-
-      #fileInputWrapper:hover {
-        background-color: #ff9900;
-      }
-
-      #fileUpload {
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin: 0;
-        padding: 0;
-        font-size: 20px;
-        cursor: pointer;
-        opacity: 0;
-        filter: alpha(opacity=0); /* For IE8 and earlier */
-      }
-
-      #fileLabel {
-        margin-right: 10px;
-      }
-
-      #selectedFile {
-        display: inline-block;
-        color: #fff;
-      }
-
-      #submitBtn {
-        background-color: #f57c00;
-        color: #fff;
-        padding: 15px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-
-      #submitBtn:hover {
-        background-color: #ff9900;
-      }
-
-      .readonly-input {
-        background-color: #2e354d;
-        border: 1px solid #3a4858;
-        padding: 12px;
-        margin-bottom: 15px;
-        color: #fff;
-        border-radius: 8px;
-      }
-    </style>
+    <title>Update Profile Picture</title>
   </head>
   <body>
-    <div id="assignment-container">
-      <h2 style="text-align: center">Submit Assignment</h2>
-      <form
-        action="submit_assignment.php"
-        method="post"
-        enctype="multipart/form-data"
-      >
-        <div class="form-group">
-          <label for="assignmentName">Assignment Name:</label>
-          <input
-            type="text"
-            id="assignmentName"
-            name="assignmentName"
-            required
-          />
-        </div>
+    <h2>Update Profile Picture</h2>
 
-        <div class="form-group">
-          <label for="assignmentDescription">Assignment Description:</label>
-          <textarea
-            id="assignmentDescription"
-            name="assignmentDescription"
-            required
-          ></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="fileUpload"
-            >Upload Your Assignment (PDF, DOC, DOCX):</label
-          >
-          <div id="fileInputWrapper">
-            <span id="fileLabel">Choose File</span>
-            <input
-              type="file"
-              id="fileUpload"
-              name="fileUpload"
-              accept=".pdf, .doc, .docx"
-              onchange="updateFileName()"
-              required
-            />
-            <span id="selectedFile">No file chosen</span>
-          </div>
-        </div>
-
-        <div class="form-group" style="text-align: center">
-          <input type="submit" value="Submit Assignment" id="submitBtn" />
-        </div>
-      </form>
-    </div>
-
-    <script>
-      function updateFileName() {
-        var fileInput = document.getElementById("fileUpload");
-        var selectedFile = document.getElementById("selectedFile");
-
-        selectedFile.textContent =
-          fileInput.files.length > 0
-            ? fileInput.files[0].name
-            : "No file chosen";
-      }
-    </script>
+    <form
+      action="update_profile.php"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <label for="profilePicture">Choose a new profile picture:</label>
+      <input
+        type="file"
+        name="profilePicture"
+        id="profilePicture"
+        accept="image/*"
+      />
+      <br />
+      <input type="submit" value="Update Picture" />
+    </form>
   </body>
 </html>

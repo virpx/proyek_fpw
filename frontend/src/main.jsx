@@ -32,6 +32,7 @@ import Addmateri from "./Teacher/center/Addmateri.jsx";
 import Addtask from "./Teacher/center/Addtask.jsx";
 import Addquiz from "./Teacher/center/Addquiz.jsx";
 import Viewtaskupload from "./Teacher/center/Viewtaskupload.jsx";
+import UserProfile from "./Student/userProfile.jsx";
 
 const host = "http://localhost:3000";
 
@@ -108,6 +109,10 @@ const router = createBrowserRouter([
         },
       },
       {
+        path: "/profile",
+        element: <UserProfile />,
+      },
+      {
         path: "/faq",
         element: <Faq />,
       },
@@ -121,7 +126,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <Homeadmin></Homeadmin>
+        element: <Homeadmin></Homeadmin>,
       },
       {
         path: "teacher",
@@ -131,66 +136,66 @@ const router = createBrowserRouter([
             element: <Indexteacher></Indexteacher>,
           },
           {
-            path:"course",
-            children:[
+            path: "course",
+            children: [
               {
-                index:true,
-                element:<Listkursus></Listkursus>
+                index: true,
+                element: <Listkursus></Listkursus>,
               },
               {
-                path:"add",
-                element:<AddCourse></AddCourse>
+                path: "add",
+                element: <AddCourse></AddCourse>,
               },
               {
-                path:"edit/:id",
-                element:<Editcourse></Editcourse>
+                path: "edit/:id",
+                element: <Editcourse></Editcourse>,
               },
               {
-                path:"center/:id",
-                children:[
+                path: "center/:id",
+                children: [
                   {
-                    index:true,
-                    element:<Coursecenter></Coursecenter>,
+                    index: true,
+                    element: <Coursecenter></Coursecenter>,
                   },
                   {
-                    path:"addtopic",
-                    element:<Addmateri></Addmateri>
+                    path: "addtopic",
+                    element: <Addmateri></Addmateri>,
                   },
                   {
-                    path:"addtask",
-                    element:<Addtask></Addtask>
+                    path: "addtask",
+                    element: <Addtask></Addtask>,
                   },
                   {
-                    path:"addquiz",
-                    element:<Addquiz></Addquiz>
+                    path: "addquiz",
+                    element: <Addquiz></Addquiz>,
                   },
                   {
-                    path:"task/:id",
-                    element:<Viewtaskupload></Viewtaskupload>
+                    path: "task/:id",
+                    element: <Viewtaskupload></Viewtaskupload>,
                   },
-                ]
-              }
-            ]
+                ],
+              },
+            ],
           },
           {
-            path:"report",
-            element:<Reportteacher></Reportteacher>
+            path: "report",
+            element: <Reportteacher></Reportteacher>,
           },
           {
-            path:"forum",
-            children:[
+            path: "forum",
+            children: [
               {
-                index:true,
-                element:<Forumteacher></Forumteacher>
+                index: true,
+                element: <Forumteacher></Forumteacher>,
               },
               {
-                path:":id",
-                element:<Detailforumteacher></Detailforumteacher>
-              }
-            ]
-          }
-        ]
-      }
+                path: ":id",
+                element: <Detailforumteacher></Detailforumteacher>,
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
 ]);

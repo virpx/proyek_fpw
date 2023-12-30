@@ -115,6 +115,7 @@ function Navbar() {
       localStorage.removeItem("user");
       localStorage.removeItem("storedTime");
       handlePindahPage("Home");
+      location.reload();
     } else if (setting == "User Profile") {
       navigate("/profile");
     }
@@ -216,7 +217,15 @@ function Navbar() {
             {sudahlogin && (
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Profile User" src={imageSrc} />
+                  <Avatar
+                    alt="Profile User"
+                    src={imageSrc}
+                    style={{
+                      border: "2px solid #1877f2",
+                      width: "50px",
+                      height: "50px",
+                    }}
+                  />
                 </IconButton>
               </Tooltip>
             )}
