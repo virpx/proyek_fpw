@@ -5,6 +5,10 @@
   "nama_kursus": "Matematika Dasar",
   "kategori": "Matematika",
   "harga": 100,
+  "deskripsi" :"Ini coba",
+  "owner" : {
+    "$oid":"65900befff59682c0c5b0549"
+  },
   "materi": [
     {
       "path": "/Materi/materi_1_1.pdf",
