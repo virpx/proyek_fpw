@@ -15,10 +15,12 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
 import authHeader from "./services/auth-header";
 import { useEffect } from "react";
+import { Buffer } from "buffer";
 import "./css/navbar.css";
-
+import axios from "axios";
+const host = "http://localhost:3000";
 const pages = ["Home", "Courses", "My Courses"];
-const settings = ["Profile", "Account", "Logout"];
+const settings = ["User Profile", "Logout"];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -62,6 +64,28 @@ function Navbar() {
   };
 
   const [sudahlogin, setSudahLogin] = React.useState(false);
+
+  const [imageSrc, setImageSrc] = React.useState("");
+  const fetchImage = async () => {
+    try {
+      const response = await axios.get(`${host}/getpp`, {
+        headers: {
+          "x-auth-token": authHeader()["x-access-token"],
+        },
+        responseType: "arraybuffer",
+      });
+
+      // Convert the ArrayBuffer to a base64 string
+      const imageBase64 = Buffer.from(response.data, "binary").toString(
+        "base64"
+      );
+      const imageSrc = `data:image/jpeg;base64,${imageBase64}`;
+      setImageSrc(imageSrc);
+    } catch (error) {
+      console.error("Error fetching image:", error.message);
+    }
+  };
+
   const auth = () => {
     var header = authHeader();
     if (header != null) {
@@ -72,10 +96,12 @@ function Navbar() {
         (Date.now() - parseInt(storedTime)) / 1000 < expirationTimeInSeconds
       ) {
         setSudahLogin(true);
+        fetchImage();
       } else {
         alert("Session has expired or does not exist. Please Login again.");
         localStorage.clear();
         handlePindahPage("Home");
+        location.reload();
       }
     }
   };
@@ -89,10 +115,8 @@ function Navbar() {
       localStorage.removeItem("user");
       localStorage.removeItem("storedTime");
       handlePindahPage("Home");
-    } else if (setting == "Profile") {
+    } else if (setting == "User Profile") {
       navigate("/profile");
-    } else if (setting == "Account") {
-      navigate("/account");
     }
   };
 
@@ -192,7 +216,7 @@ function Navbar() {
             {sudahlogin && (
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Profile User" src="" />
+                  <Avatar alt="Profile User" src={imageSrc} />
                 </IconButton>
               </Tooltip>
             )}

@@ -124,22 +124,27 @@ const transactionSchema = new mongoose.Schema({
   },
 });
 
-const tugasSchema = new mongoose.Schema({
-  tugas_id: mongoose.Schema.Types.ObjectId,
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+const tugasSchema = new mongoose.Schema(
+  {
+    tugas_id: mongoose.Schema.Types.ObjectId,
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    path: String,
+    score: {
+      type: Number,
+      default: 0,
+    },
   },
-  path: String,
-  score: {
-    type: Number,
-    default: 0,
-  },
-});
+  {
+    versionKey: false,
+  }
+);
 
 const Transaction = mongoose.model("Transaction", transactionSchema);
 const Kursus = mongoose.model("Kursus", kursusSchema);
 const User = mongoose.model("User", userSchema);
 const Tugas = mongoose.model("Tugas", tugasSchema);
 
-module.exports = { Kursus, User, Tugas };
+module.exports = { Kursus, User, Tugas, Transaction };

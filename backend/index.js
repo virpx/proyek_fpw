@@ -2,7 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { User, Kursus, Transaction } = require("./models/data");
+const { User, Kursus, Transaction, Tugas } = require("./models/data");
+const uploadProfile = require("./controller/uploadProfile");
+const uploadAssignment = require("./controller/uploadAssignment");
 const app = express();
 const port = 3000;
 const cors = require("cors");
@@ -346,6 +348,26 @@ app.post("/submitquiz", async (req, res) => {
   console.log(pushNilai);
   return res.status(200).json({ score: newScore, maxScore: 100 });
 });
+
+//get all tugas
+app.get("/tugas", async (req, res) => {
+  const tugas = await Tugas.find();
+  return res.status(200).json({
+    tugas,
+  });
+});
+
+//upload pp
+app.post("/uploadpp", uploadProfile.singleFile);
+
+//get pp
+app.get("/getpp", uploadProfile.getImage);
+
+//submit assignment
+app.post("/submitassignment", uploadAssignment.singleFile);
+
+//get assignment
+app.get("/getassignment", uploadAssignment.getPdf);
 
 app.listen(port, async () => {
   try {

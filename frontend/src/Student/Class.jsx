@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import * as React from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import Footer from "../Index/Footer";
 import Navbar from "../Navbar";
@@ -24,6 +25,7 @@ const Class = () => {
   const totalPages = materiObjects.length;
   const [quiz, setQuiz] = useState(null);
   const [assignment, setAssignment] = useState(null);
+  const [completedAssignment, setCompletedAssignment] = useState(null);
 
   const getCurrentCourseInfo = async () => {
     const getData = await axios.get(
@@ -45,13 +47,32 @@ const Class = () => {
       },
     });
     setUser(getData.data.user[0]);
-    console.log(getData.data.user[0]);
   };
 
   useEffect(() => {
     getCurrentCourseInfo();
     getUserInfo();
   }, []);
+
+  const getCompleteAssignment = async () => {
+    const getData = await axios.get(`${host}/tugas`, {
+      headers: {
+        "x-auth-token": authHeader()["x-access-token"],
+      },
+    });
+    var completed = getData.data.tugas.filter(
+      (item) => item.user_id === currentUser._id
+    );
+    setCompletedAssignment(completed);
+  };
+
+  useEffect(() => {
+    getCompleteAssignment();
+  }, [currentUser]);
+
+  useEffect(() => {
+    getCompleteAssignment();
+  }, [assignment]);
 
   const updateCurrentIndex = async () => {
     const updateData = await axios.put(
@@ -106,6 +127,60 @@ const Class = () => {
     const newSelectedAnswers = [...selectedAnswers];
     newSelectedAnswers[questionIndex] = selectedAnswer;
     setSelectedAnswers(newSelectedAnswers);
+  };
+  const [sudahlogin, setSudahLogin] = React.useState(false);
+  const auth = () => {
+    var header = authHeader();
+    if (header != null) {
+      const storedTime = localStorage.getItem("storedTime");
+      const expirationTimeInSeconds = 3600;
+      if (
+        storedTime &&
+        (Date.now() - parseInt(storedTime)) / 1000 < expirationTimeInSeconds
+      ) {
+        setSudahLogin(true);
+      } else {
+        alert("Session has expired or does not exist. Please Login again.");
+        localStorage.clear();
+        navigate("/");
+        location.reload();
+      }
+    }
+  };
+
+  useEffect(() => {
+    auth();
+  }, [currentBoard]);
+
+  const [file, setFile] = useState(null);
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmit = async () => {
+    if (!file) {
+      alert("Please select a file");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("tugas_id", assignmentObjects[assignment]._id);
+    formData.append("email", currentUser.email);
+    formData.append("assignment_pdf", file);
+
+    try {
+      const response = await axios.post(`${host}/submitassignment`, formData, {
+        headers: {
+          "x-auth-token": authHeader()["x-access-token"],
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      alert("Successfully Completed The Assignment");
+      setAssignment(null);
+    } catch (error) {
+      console.error("Error uploading file:", error.message);
+    }
   };
 
   return (
@@ -173,25 +248,23 @@ const Class = () => {
 
           {currentBoard == "quiz" && (
             <div id="content">
+              <h1 style={{ marginLeft: "10px" }}>Quiz List</h1>
               {quiz == null && (
-                <div>
-                  <h1 style={{ marginLeft: "10px" }}>Quiz List</h1>
-                  {quizObjects.map((e, index) => {
-                    return (
-                      <div
-                        key={e.name}
-                        className="course-cardM"
-                        onClick={() => {
-                          setQuiz(index);
-                        }}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <div className="course-card-textM">
-                          <h2>{e.name}</h2>
-                        </div>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  {quizObjects.map((e, index) => (
+                    <div
+                      key={e.name}
+                      className="course-cardM"
+                      onClick={() => {
+                        setQuiz(index);
+                      }}
+                      style={{ cursor: "pointer", marginLeft: "10px" }}
+                    >
+                      <div className="course-card-textM">
+                        <h2>{e.name}</h2>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               )}
 
@@ -298,21 +371,37 @@ const Class = () => {
 
           {currentBoard == "assignment" && (
             <div id="content">
+              <h1 style={{ marginLeft: "10px" }}>Assignment List</h1>
               {assignment == null && (
-                <div>
-                  <h1 style={{ marginLeft: "10px" }}>Assignment List</h1>
+                <div style={{ display: "flex", flexDirection: "row" }}>
                   {assignmentObjects.map((e, index) => {
+                    const completedAssignmentItem = completedAssignment.find(
+                      (c) => e._id === c.tugas_id
+                    );
+
                     return (
                       <div
                         key={e.name}
                         className="course-cardM"
                         onClick={() => {
-                          setAssignment(index);
+                          if (completedAssignmentItem) {
+                            alert(
+                              `Already Completed\nScore: ${completedAssignmentItem.score}`
+                            );
+                          } else {
+                            setAssignment(index);
+                          }
                         }}
                         style={{ cursor: "pointer" }}
                       >
                         <div className="course-card-textM">
                           <h2>{e.name}</h2>
+                          {completedAssignmentItem && (
+                            <p style={{ color: "greenyellow" }}>Completed</p>
+                          )}
+                          {completedAssignmentItem && (
+                            <p>Score: {completedAssignmentItem.score}</p>
+                          )}
                         </div>
                       </div>
                     );
@@ -350,22 +439,27 @@ const Class = () => {
                       </div>
                     </div>
 
-                    <div class="form-group">
-                      <label for="fileUpload">
-                        Upload Your Assignment (PDF):
-                      </label>
-                      <input
-                        class="form-control"
-                        name="fileUpload"
-                        accept=".pdf"
-                        type="file"
-                        id="formFile"
-                        required
-                      />
-                    </div>
+                    <div>
+                      <div className="form-group">
+                        <label htmlFor="formFile">
+                          Upload Your Assignment (PDF):
+                        </label>
+                        <input
+                          className="form-control"
+                          name="fileUpload"
+                          accept=".pdf"
+                          type="file"
+                          id="formFile"
+                          onChange={handleFileChange}
+                          required
+                        />
+                      </div>
 
-                    <div class="form-group">
-                      <button id="submitBtn">Submit Assignment</button>
+                      <div className="form-group">
+                        <button id="submitBtn" onClick={handleSubmit}>
+                          Submit Assignment
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -386,14 +480,21 @@ const Class = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Assignment 1</td>
-                      <td>85</td>
-                    </tr>
-                    <tr>
-                      <td>Assignment 2</td>
-                      <td>92</td>
-                    </tr>
+                    {assignmentObjects.map((e, index) => {
+                      const completedAssignmentItem = completedAssignment.find(
+                        (c) => e._id === c.tugas_id
+                      );
+
+                      return (
+                        <tr>
+                          <td>{e.name}</td>
+                          {!completedAssignmentItem && <td>0</td>}
+                          {completedAssignmentItem && (
+                            <td>{completedAssignmentItem.score}</td>
+                          )}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
                 <h2 style={{ color: "white" }}>Quiz Scores</h2>
@@ -407,12 +508,22 @@ const Class = () => {
                   <tbody>
                     {currentUser.listkursus.map((l) => {
                       if (l.kursus === course._id) {
-                        return l.nilai_quiz.map((n, index) => (
-                          <tr key={index}>
-                            <td>{n.name}</td>
-                            <td>{n.score}</td>
-                          </tr>
-                        ));
+                        return course.quiz.map((q, index) => {
+                          const matchingNilaiQuiz = l.nilai_quiz.find(
+                            (n) => n.name === q.name
+                          );
+
+                          return (
+                            <tr key={index}>
+                              <td>{q.name}</td>
+                              <td>
+                                {matchingNilaiQuiz
+                                  ? matchingNilaiQuiz.score
+                                  : 0}
+                              </td>
+                            </tr>
+                          );
+                        });
                       }
                       return null;
                     })}
