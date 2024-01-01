@@ -1,62 +1,13 @@
 import { useEffect } from "react";
 import TeacherNavbar from "./TeacherNavbar";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { BarChart } from '@mui/x-charts/BarChart';
 export default function Reportteacher() {
     const chartSetting = {
         width: 950,
         height: 400,
     };
-    const dataset = [
-        {
-            jumlah: 10,
-            month: 'Jan',
-        },
-        {
-            jumlah: 20,
-            month: 'Feb',
-        },
-        {
-            jumlah: 10,
-            month: 'Mar',
-        },
-        {
-            jumlah: 10,
-            month: 'Apr',
-        },
-        {
-            jumlah: 10,
-            month: 'May',
-        },
-        {
-            jumlah: 10,
-            month: 'June',
-        },
-        {
-            jumlah: 10,
-            month: 'July',
-        },
-        {
-            jumlah: 10,
-            month: 'Aug',
-        },
-        {
-            jumlah: 10,
-            month: 'Sept',
-        },
-        {
-            jumlah: 10,
-            month: 'Oct',
-        },
-        {
-            jumlah: 10,
-            month: 'Nov',
-        },
-        {
-            jumlah: 10,
-            month: 'Dec',
-        },
-    ];
+    const dataload = useLoaderData();
     const navigate = useNavigate();
     useEffect(() => {
         document.getElementById("containerutama").style.maxHeight = document.getElementById("containerutama").offsetHeight + "px"
@@ -77,7 +28,7 @@ export default function Reportteacher() {
                                     <div className="col mr-2">
                                         <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Total Course</div>
-                                        <div className="h5 mb-0 font-weight-bold text-black">$40,000</div>
+                                        <div className="h5 mb-0 font-weight-bold text-black">{dataload.jumlahkursus}</div>
                                     </div>
                                     <div style={{ width: "30px" }}></div>
                                     <div className="col-auto">
@@ -92,7 +43,7 @@ export default function Reportteacher() {
                                     <div className="col mr-2">
                                         <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Total Earnings</div>
-                                        <div className="h5 mb-0 font-weight-bold text-black">$40,000</div>
+                                        <div className="h5 mb-0 font-weight-bold text-black">Rp {dataload.jumlahearning}</div>
                                     </div>
                                     <div style={{ width: "30px" }}></div>
                                     <div className="col-auto">
@@ -108,7 +59,7 @@ export default function Reportteacher() {
                                     <div className="col mr-2">
                                         <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Total Student</div>
-                                        <div className="h5 mb-0 font-weight-bold text-black">$40,000</div>
+                                        <div className="h5 mb-0 font-weight-bold text-black">{dataload.jumlahstudent}</div>
                                     </div>
                                     <div style={{ width: "30px" }}></div>
                                     <div className="col-auto">
@@ -122,7 +73,7 @@ export default function Reportteacher() {
                         <br></br>
                         <div style={{ width: "100%", height: "max-content" }} className="d-flex justify-content-center align-items-center">
                             <BarChart
-                                dataset={dataset}
+                                dataset={dataload.penjualantahunini}
                                 yAxis={[{ scaleType: 'band', dataKey: 'month' }]}
                                 series={[{ dataKey: 'jumlah', label: 'Penjualan Tahun Ini' }]}
                                 layout="horizontal"
@@ -132,7 +83,7 @@ export default function Reportteacher() {
                         <div style={{ width: "100%", height: "max-content" }} className="d-flex justify-content-center align-items-center">
                             <BarChart
                                 xAxis={[{ scaleType: 'band', data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'] }]}
-                                series={[{ data: [4, 2, 3, 5, 4, 6, 6, 4, 6, 7, 6, 6], label: 'Pendapatan Tahun Ini', color: "#4e79a7" }]}
+                                series={[{ data: dataload.pendapatantahunini, label: 'Pendapatan Tahun Ini', color: "#4e79a7" }]}
                                 {...chartSetting}
                             />
                         </div>

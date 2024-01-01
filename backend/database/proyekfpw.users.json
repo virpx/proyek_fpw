@@ -7,7 +7,6 @@
   "password": "$2b$10$qjtCqghogTKedsr99EBwzOE9HOn.p4aX1jmpMCV2GUaZmke2lXgzS",
   "profile_path": "profiles/a@gmail.com.png",
   "role": 0,
-  "active": 1,
   "createdAt": "2023-12-10T00:00:00.000Z",
   "updatedAt": {
     "$date": "2023-12-30T09:50:19.795Z"
@@ -15,7 +14,7 @@
   "listkursus": [
     {
       "kursus": {
-        "$oid": "658d2879b7c7ce13929a0220"
+        "$oid": "6590ecc8f477c9d8076920fb"
       },
       "last_progress": 2,
       "current_index": 2,
@@ -27,7 +26,8 @@
             "$oid": "658e73edc0a1aa8c5ed39710"
           }
         }
-      ]
+      ],
+      "createdAt": "2023-12-10T00:00:00.000Z"
     }
   ]
 }]

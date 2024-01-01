@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const materiKursusSchema = new mongoose.Schema(
   {
     path: String,
+    name: String,
   },
   {
     versionKey: false,
@@ -66,8 +67,18 @@ const kursusSchema = new mongoose.Schema(
     materi: [materiKursusSchema],
     quiz: [quizSchema],
     assignment: [assignmentSchema],
-    createdAt: Date,
-    updatedAt: Date,
+    owner: mongoose.Schema.ObjectId,
+    deskripsi: String,
+    thumb_path: String,
+    active: Number,
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     versionKey: false,
@@ -98,6 +109,10 @@ const userSchema = new mongoose.Schema(
             score: Number,
           },
         ],
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
   },
@@ -134,17 +149,30 @@ const tugasSchema = new mongoose.Schema(
     path: String,
     score: {
       type: Number,
-      default: 0,
+      default: -1,
     },
   },
   {
     versionKey: false,
   }
 );
+const forumanswerSchema = new mongoose.Schema({
+  iduser:mongoose.Schema.Types.ObjectId,
+  answer:String,
+  ishighlight:{
+    type:Boolean,
+    default:false,
+  }
+})
+const forumSchema = new mongoose.Schema({
+  kursus_id:mongoose.Schema.Types.ObjectId,
+  question:String,
+  lanswer:[forumanswerSchema]
+})
 
 const Transaction = mongoose.model("Transaction", transactionSchema);
 const Kursus = mongoose.model("Kursus", kursusSchema);
 const User = mongoose.model("User", userSchema);
 const Tugas = mongoose.model("Tugas", tugasSchema);
-
-module.exports = { Kursus, User, Tugas, Transaction };
+const Forum = mongoose.model("Forum",forumSchema)
+module.exports = { Kursus, User, Tugas, Transaction,Forum };

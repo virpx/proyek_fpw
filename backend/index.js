@@ -8,6 +8,7 @@ const uploadAssignment = require("./controller/uploadAssignment");
 const app = express();
 const port = 3000;
 const cors = require("cors");
+const teacher = require("./teacher");
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -19,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 const helper = require("./helper");
 
 const secret = "rahasia";
-
+app.use("/teacher",teacher)
 app.post("/register", async (req, res) => {
   let { name, password, cpassword, email, role } = req.body;
 
