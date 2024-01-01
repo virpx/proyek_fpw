@@ -1,217 +1,215 @@
-[
-  {
-    "_id": {
-      "$oid": "6590ecc8f477c9d8076920fb"
-    },
-    "nama_kursus": "Matematika Dasar",
-    "kategori": "Matematika",
-    "harga": 100,
-    "active": 1,
-    "materi": [
-      {
-        "path": "/Materi/materi_1_1.pdf",
-        "_id": {
-          "$oid": "658d2879b7c7ce13929a0221"
-        }
-      },
-      {
-        "path": "/Materi/materi_1_2.pdf",
-        "_id": {
-          "$oid": "658d2879b7c7ce13929a0222"
-        }
+[{
+  "_id": {
+    "$oid": "6590ecc8f477c9d8076920fb"
+  },
+  "nama_kursus": "Matematika Dasar",
+  "kategori": "Matematika",
+  "harga": 100,
+  "active": 1,
+  "materi": [
+    {
+      "path": "/Materi/materi_1_1.pdf",
+      "_id": {
+        "$oid": "658d2879b7c7ce13929a0221"
       }
-    ],
-    "quiz": [
-      {
-        "name": "Sample Quiz",
-        "questions": [
-          {
-            "question": "Bilangan yang termasuk ke dalam bilangan real adalah...",
-            "answers": [
-              {
-                "text": "1, 2, 3, 4, 5",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0225"
-                }
-              },
-              {
-                "text": "0, -1, -2, -3, -4",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0226"
-                }
-              },
-              {
-                "text": "√2, √3, √5, √6",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0227"
-                }
-              },
-              {
-                "text": "π, e, i",
-                "isCorrect": true,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0228"
-                }
+    },
+    {
+      "path": "/Materi/materi_1_2.pdf",
+      "_id": {
+        "$oid": "658d2879b7c7ce13929a0222"
+      }
+    }
+  ],
+  "quiz": [
+    {
+      "name": "Sample Quiz",
+      "questions": [
+        {
+          "question": "Bilangan yang termasuk ke dalam bilangan real adalah...",
+          "answers": [
+            {
+              "text": "1, 2, 3, 4, 5",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0225"
               }
-            ],
-            "score": 10,
-            "_id": {
-              "$oid": "658d2879b7c7ce13929a0224"
-            }
-          },
-          {
-            "question": "Bilangan yang termasuk ke dalam bilangan real adalah...",
-            "answers": [
-              {
-                "text": "1, 2, 3, 4, 5",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0225"
-                }
-              },
-              {
-                "text": "0, -1, -2, -3, -4",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0226"
-                }
-              },
-              {
-                "text": "√2, √3, √5, √6",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0227"
-                }
-              },
-              {
-                "text": "π, e, i",
-                "isCorrect": true,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0228"
-                }
+            },
+            {
+              "text": "0, -1, -2, -3, -4",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0226"
               }
-            ],
-            "score": 10,
-            "_id": {
-              "$oid": "658d2879b7c7ce13929a0224"
+            },
+            {
+              "text": "√2, √3, √5, √6",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0227"
+              }
+            },
+            {
+              "text": "π, e, i",
+              "isCorrect": true,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0228"
+              }
             }
+          ],
+          "score": 10,
+          "_id": {
+            "$oid": "658d2879b7c7ce13929a0224"
           }
-        ],
-        "_id": {
-          "$oid": "658d2879b7c7ce13929a0223"
-        }
-      },
-      {
-        "name": "Sample Quiz2",
-        "questions": [
-          {
-            "question": "Bilangan yang termasuk ke dalam bilangan real adalah...",
-            "answers": [
-              {
-                "text": "1, 2, 3, 4, 5",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0225"
-                }
-              },
-              {
-                "text": "0, -1, -2, -3, -4",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0226"
-                }
-              },
-              {
-                "text": "√2, √3, √5, √6",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0227"
-                }
-              },
-              {
-                "text": "π, e, i",
-                "isCorrect": true,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0228"
-                }
+        },
+        {
+          "question": "Bilangan yang termasuk ke dalam bilangan real adalah...",
+          "answers": [
+            {
+              "text": "1, 2, 3, 4, 5",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0225"
               }
-            ],
-            "score": 10,
-            "_id": {
-              "$oid": "658d2879b7c7ce13929a0224"
-            }
-          },
-          {
-            "question": "Bilangan yang termasuk ke dalam bilangan real adalah...",
-            "answers": [
-              {
-                "text": "1, 2, 3, 4, 5",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0225"
-                }
-              },
-              {
-                "text": "0, -1, -2, -3, -4",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0226"
-                }
-              },
-              {
-                "text": "√2, √3, √5, √6",
-                "isCorrect": false,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0227"
-                }
-              },
-              {
-                "text": "π, e, i",
-                "isCorrect": true,
-                "_id": {
-                  "$oid": "658d2879b7c7ce13929a0228"
-                }
+            },
+            {
+              "text": "0, -1, -2, -3, -4",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0226"
               }
-            ],
-            "score": 10,
-            "_id": {
-              "$oid": "658d2879b7c7ce13929a0224"
+            },
+            {
+              "text": "√2, √3, √5, √6",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0227"
+              }
+            },
+            {
+              "text": "π, e, i",
+              "isCorrect": true,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0228"
+              }
             }
+          ],
+          "score": 10,
+          "_id": {
+            "$oid": "658d2879b7c7ce13929a0224"
           }
-        ],
-        "_id": {
-          "$oid": "658d2879b7c7ce13929a0229"
         }
+      ],
+      "_id": {
+        "$oid": "658d2879b7c7ce13929a0223"
       }
-    ],
-    "createdAt": {
-      "$date": "2023-12-28T07:49:13.278Z"
     },
-    "updatedAt": {
-      "$date": "2023-12-28T07:49:13.278Z"
-    },
-    "deskripsi": "Ini coba",
-    "owner": {
-      "$oid": "65900befff59682c0c5b0549"
-    },
-    "assignment": [
-      {
-        "name": "assigntment 1",
-        "desc": "assignment 1 desc",
-        "_id": {
-          "$oid": "658fc66cb2e3d557b4113869"
+    {
+      "name": "Sample Quiz2",
+      "questions": [
+        {
+          "question": "Bilangan yang termasuk ke dalam bilangan real adalah...",
+          "answers": [
+            {
+              "text": "1, 2, 3, 4, 5",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0225"
+              }
+            },
+            {
+              "text": "0, -1, -2, -3, -4",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0226"
+              }
+            },
+            {
+              "text": "√2, √3, √5, √6",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0227"
+              }
+            },
+            {
+              "text": "π, e, i",
+              "isCorrect": true,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0228"
+              }
+            }
+          ],
+          "score": 10,
+          "_id": {
+            "$oid": "658d2879b7c7ce13929a0224"
+          }
+        },
+        {
+          "question": "Bilangan yang termasuk ke dalam bilangan real adalah...",
+          "answers": [
+            {
+              "text": "1, 2, 3, 4, 5",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0225"
+              }
+            },
+            {
+              "text": "0, -1, -2, -3, -4",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0226"
+              }
+            },
+            {
+              "text": "√2, √3, √5, √6",
+              "isCorrect": false,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0227"
+              }
+            },
+            {
+              "text": "π, e, i",
+              "isCorrect": true,
+              "_id": {
+                "$oid": "658d2879b7c7ce13929a0228"
+              }
+            }
+          ],
+          "score": 10,
+          "_id": {
+            "$oid": "658d2879b7c7ce13929a0224"
+          }
         }
-      },
-      {
-        "name": "assigntment 2",
-        "desc": "assignment 2 desc",
-        "_id": {
-          "$oid": "658fc66cb2e3d557b4113863"
-        }
+      ],
+      "_id": {
+        "$oid": "658d2879b7c7ce13929a0229"
       }
-    ]
-  }
-]
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-12-28T07:49:13.278Z"
+  },
+  "updatedAt": {
+    "$date": "2023-12-28T07:49:13.278Z"
+  },
+  "deskripsi": "Ini coba",
+  "owner": {
+    "$oid": "65900befff59682c0c5b0549"
+  },
+  "assignment": [
+    {
+      "name": "assigntment 1",
+      "desc": "assignment 1 desc",
+      "_id": {
+        "$oid": "658fc66cb2e3d557b4113869"
+      }
+    },
+    {
+      "name": "assigntment 2",
+      "desc": "assignment 2 desc",
+      "_id": {
+        "$oid": "658fc66cb2e3d557b4113863"
+      }
+    }
+  ]
+}]
