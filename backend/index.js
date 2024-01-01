@@ -1,8 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { User, Kursus, Transaction, Tugas } = require("./models/data");
+const { User, Kursus, Transaction, Tugas, Forum } = require("./models/data");
 const uploadProfile = require("./controller/uploadProfile");
 const uploadAssignment = require("./controller/uploadAssignment");
 const app = express();
@@ -20,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 const helper = require("./helper");
 
 const secret = "rahasia";
-app.use("/teacher",teacher)
+app.use("/teacher", teacher);
 app.post("/register", async (req, res) => {
   let { name, password, cpassword, email, role } = req.body;
 
@@ -182,10 +183,13 @@ app.get("/listKursus", async (req, res) => {
   });
 });
 
+//get kursus information
 app.get("/kursus/:_id", async (req, res) => {
   const kursus = await Kursus.find({ _id: req.params._id });
+  const user = await User.find({ _id: kursus[0].owner });
   return res.status(200).json({
-    kursus,
+    kursus: kursus,
+    teacher: user,
   });
 });
 
@@ -369,6 +373,94 @@ app.post("/submitassignment", uploadAssignment.singleFile);
 
 //get assignment
 app.get("/getassignment", uploadAssignment.getPdf);
+
+//get list forum di kursus
+app.get("/listforum", async (req, res) => {
+  let { kursus_id } = req.query;
+  const result = await Forum.aggregate([
+    {
+      $match: { kursus_id: new ObjectId(kursus_id) },
+    },
+    {
+      $unwind: "$lanswer",
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "lanswer.iduser",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $unwind: "$user",
+    },
+    {
+      $project: {
+        _id: 1,
+        kursus_id: 1,
+        question: 1,
+        lanswer: {
+          iduser: "$lanswer.iduser",
+          answer: "$lanswer.answer",
+          ishighlight: "$lanswer.ishighlight",
+          user: {
+            email: "$user.email",
+            name: "$user.name",
+            // Include other user fields as needed
+          },
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "$_id",
+        kursus_id: { $first: "$kursus_id" },
+        question: { $first: "$question" },
+        lanswer: { $push: "$lanswer" },
+      },
+    },
+  ]);
+
+  return res.status(200).json({
+    listforum: result,
+  });
+});
+
+//insert answer to forum
+app.post("/submitanswer", async (req, res) => {
+  let { forum_id, answer } = req.body;
+
+  let user, id_user;
+  const token = req.headers["x-auth-token"] || "";
+  if (token) {
+    try {
+      data = jwt.verify(token, secret);
+      user = await User.find({ _id: data._id });
+      if (user) {
+        flag = true;
+        id_user = data._id;
+      }
+    } catch (err) {
+      return res.status(400).json({
+        err,
+      });
+    }
+  }
+
+  const newAnswer = {
+    iduser: id_user,
+    answer: answer,
+    ishighlight: false,
+  };
+
+  const result = await Forum.updateOne(
+    { _id: forum_id },
+    { $push: { lanswer: newAnswer } }
+  );
+
+  return res.status(200).json({ message: "berhasil" });
+});
 
 app.listen(port, async () => {
   try {

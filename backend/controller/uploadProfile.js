@@ -122,6 +122,10 @@ const getImage = async (req, res) => {
       });
     }
   }
+
+  if (user.profile_path == null) {
+    return res.status(200).json({ message: "tidak ada" });
+  }
   const lokasinya = user.profile_path;
   return res.status(200).sendFile(lokasinya, { root: "." });
 };

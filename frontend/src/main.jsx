@@ -81,8 +81,16 @@ const router = createBrowserRouter([
         },
       },
       {
-        path: "/course/detail",
+        path: "/course/detail/:id",
         element: <DetailCourse />,
+        loader: async ({ params }) => {
+          const result = await axios.get(`${host}/kursus/${params.id}`, {
+            headers: {
+              "x-auth-token": authHeader()["x-access-token"],
+            },
+          });
+          return { kursus: result.data.kursus, teacher: result.data.teacher };
+        },
       },
       {
         path: "/mycourses/:_id",
@@ -149,11 +157,16 @@ const router = createBrowserRouter([
               {
                 path: "edit/:id",
                 loader: async (data) => {
-                  var axiosget = await axios.get("http://localhost:3000/teacher/getcoursedetail/" + data.params.id, {
-                    headers: {
-                      "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token
+                  var axiosget = await axios.get(
+                    "http://localhost:3000/teacher/getcoursedetail/" +
+                      data.params.id,
+                    {
+                      headers: {
+                        "x-auth-token": JSON.parse(localStorage.getItem("user"))
+                          .token,
+                      },
                     }
-                  })
+                  );
                   return axiosget.data;
                 },
                 element: <Editcourse></Editcourse>,
@@ -164,11 +177,17 @@ const router = createBrowserRouter([
                   {
                     index: true,
                     loader: async (data) => {
-                      var axiosget = await axios.get("http://localhost:3000/teacher/getcenter/" + data.params.id, {
-                        headers: {
-                          "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token
+                      var axiosget = await axios.get(
+                        "http://localhost:3000/teacher/getcenter/" +
+                          data.params.id,
+                        {
+                          headers: {
+                            "x-auth-token": JSON.parse(
+                              localStorage.getItem("user")
+                            ).token,
+                          },
                         }
-                      })
+                      );
                       return axiosget.data;
                     },
                     element: <Coursecenter></Coursecenter>,
@@ -176,15 +195,15 @@ const router = createBrowserRouter([
                   {
                     path: "addtopic",
                     loader: (data) => {
-                      console.log(data.params)
-                      return ["add", data.params.id]
+                      console.log(data.params);
+                      return ["add", data.params.id];
                     },
                     element: <Addmateri></Addmateri>,
                   },
                   {
                     path: "addtask",
                     loader: (data) => {
-                      return ["add", data.params.id]
+                      return ["add", data.params.id];
                     },
                     element: <Addtask></Addtask>,
                   },
@@ -195,38 +214,70 @@ const router = createBrowserRouter([
                   {
                     path: "task/:idtaske",
                     loader: async (data) => {
-                      var hasil = await axios.get("http://localhost:3000/teacher/taskkumpul/" + data.params.idtaske, {
-                        headers: {
-                          "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token
+                      var hasil = await axios.get(
+                        "http://localhost:3000/teacher/taskkumpul/" +
+                          data.params.idtaske,
+                        {
+                          headers: {
+                            "x-auth-token": JSON.parse(
+                              localStorage.getItem("user")
+                            ).token,
+                          },
                         }
-                      })
-                      return hasil.data
+                      );
+                      return hasil.data;
                     },
                     element: <Viewtaskupload></Viewtaskupload>,
                   },
                   {
                     path: "edittopic/:idtopic",
                     loader: async (data) => {
-                      var hasil = await axios.get("http://localhost:3000/teacher/gettopicdetail/" + data.params.id + "/" + data.params.idtopic, {
-                        headers: {
-                          "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token
+                      var hasil = await axios.get(
+                        "http://localhost:3000/teacher/gettopicdetail/" +
+                          data.params.id +
+                          "/" +
+                          data.params.idtopic,
+                        {
+                          headers: {
+                            "x-auth-token": JSON.parse(
+                              localStorage.getItem("user")
+                            ).token,
+                          },
                         }
-                      })
-                      return ["edit", data.params.id, data.params.idtopic, hasil.data]
+                      );
+                      return [
+                        "edit",
+                        data.params.id,
+                        data.params.idtopic,
+                        hasil.data,
+                      ];
                     },
-                    element: <Addmateri></Addmateri>
+                    element: <Addmateri></Addmateri>,
                   },
                   {
                     path: "edittask/:idtask",
                     loader: async (data) => {
-                      var hasil = await axios.get("http://localhost:3000/teacher/gettaskdetail/" + data.params.id + "/" + data.params.idtask, {
-                        headers: {
-                          "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token
+                      var hasil = await axios.get(
+                        "http://localhost:3000/teacher/gettaskdetail/" +
+                          data.params.id +
+                          "/" +
+                          data.params.idtask,
+                        {
+                          headers: {
+                            "x-auth-token": JSON.parse(
+                              localStorage.getItem("user")
+                            ).token,
+                          },
                         }
-                      })
-                      return ["edit", data.params.id, data.params.idtask, hasil.data]
+                      );
+                      return [
+                        "edit",
+                        data.params.id,
+                        data.params.idtask,
+                        hasil.data,
+                      ];
                     },
-                    element: <Addtask></Addtask>
+                    element: <Addtask></Addtask>,
                   },
                 ],
               },
@@ -235,12 +286,16 @@ const router = createBrowserRouter([
           {
             path: "report",
             loader: async () => {
-              var hasil = await axios.get("http://localhost:3000/teacher/reportdata", {
-                headers: {
-                  "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token
+              var hasil = await axios.get(
+                "http://localhost:3000/teacher/reportdata",
+                {
+                  headers: {
+                    "x-auth-token": JSON.parse(localStorage.getItem("user"))
+                      .token,
+                  },
                 }
-              })
-              return hasil.data
+              );
+              return hasil.data;
             },
             element: <Reportteacher></Reportteacher>,
           },
@@ -250,30 +305,42 @@ const router = createBrowserRouter([
               {
                 index: true,
                 loader: async () => {
-                  var hasil = await axios.get("http://localhost:3000/teacher/getchannel", {
-                    headers: {
-                      "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token
+                  var hasil = await axios.get(
+                    "http://localhost:3000/teacher/getchannel",
+                    {
+                      headers: {
+                        "x-auth-token": JSON.parse(localStorage.getItem("user"))
+                          .token,
+                      },
                     }
-                  })
+                  );
                   return hasil.data;
                 },
                 element: <Forumteacher></Forumteacher>,
               },
               {
                 path: ":idforum",
-                loader:async(data)=>{
-                  var hasil = await axios.get("http://localhost:3000/teacher/getforumdetail/"+data.params.idforum, {
-                    headers: {
-                      "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token
+                loader: async (data) => {
+                  var hasil = await axios.get(
+                    "http://localhost:3000/teacher/getforumdetail/" +
+                      data.params.idforum,
+                    {
+                      headers: {
+                        "x-auth-token": JSON.parse(localStorage.getItem("user"))
+                          .token,
+                      },
                     }
-                  })
-                  var namaarr = []
+                  );
+                  var namaarr = [];
                   for (const iterator of hasil.data.lanswer) {
-                    const namauser = await axios.get("http://localhost:3000/teacher/getnamauser/" + iterator.iduser);
-                    namaarr.push(namauser.data)
+                    const namauser = await axios.get(
+                      "http://localhost:3000/teacher/getnamauser/" +
+                        iterator.iduser
+                    );
+                    namaarr.push(namauser.data);
                   }
-                  console.log(namaarr)
-                  return [data.params.idforum,hasil.data,namaarr]
+                  console.log(namaarr);
+                  return [data.params.idforum, hasil.data, namaarr];
                 },
                 element: <Detailforumteacher></Detailforumteacher>,
               },

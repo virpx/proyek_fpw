@@ -1,50 +1,67 @@
-#luardetail {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #1a2138;
-  color: white;
+#header-section {
   text-align: center;
-}
-
-.checkout-container {
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  background: #2c324e;
-  margin: 50px auto;
-  max-width: 600px;
-}
-
-.checkout-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.form-input {
-  margin: 10px;
-  padding: 8px;
-  width: 80%;
-  border: 1px solid #f57c00;
-  border-radius: 5px;
-  background-color: #1a2138;
-  color: white;
-}
-
-.form-button {
-  margin-top: 20px;
   margin-bottom: 20px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #f57c00;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
 }
 
-.form-button:hover {
-  background-color: #d45a00;
+#title-text,
+#subtitle-text {
+  color: #f57c00; /* Orange */
+}
+
+.content-section {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #293552; /* Slightly lighter navy blue for sections */
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#course-overview-content {
+  color: #b2b9d0; /* Light gray text */
+}
+
+#enrollment-link {
+  color: #f57c00; /* Orange */
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+#enrollment-link:hover {
+  color: #ffffff; /* White on hover */
+}
+
+#footer-section {
+  text-align: center;
+  color: #b2b9d0; /* Light gray text */
+  margin-top: 20px;
+}
+
+.instructor-profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: #394866; /* Darker navy blue */
+  padding: 15px;
+  border-radius: 10px;
+}
+
+#profile-image {
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+#instructor-info-container {
+  flex-grow: 1;
+}
+
+.instructor-info-text {
+  margin-bottom: 5px;
+}
+#main-container {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 20px;
+  background-color: #1a2138; /* Navy Blue */
+  color: #ffffff; /* White text on navy blue background */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }

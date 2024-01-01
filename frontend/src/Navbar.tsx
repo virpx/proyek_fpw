@@ -79,6 +79,7 @@ function Navbar() {
       const imageBase64 = Buffer.from(response.data, "binary").toString(
         "base64"
       );
+
       const imageSrc = `data:image/jpeg;base64,${imageBase64}`;
       setImageSrc(imageSrc);
     } catch (error) {

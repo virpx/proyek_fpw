@@ -26,6 +26,8 @@ const Class = () => {
   const [quiz, setQuiz] = useState(null);
   const [assignment, setAssignment] = useState(null);
   const [completedAssignment, setCompletedAssignment] = useState(null);
+  const [forumList, setForumList] = useState();
+  const [Forum, setForum] = useState(null);
 
   const getCurrentCourseInfo = async () => {
     const getData = await axios.get(
@@ -38,6 +40,18 @@ const Class = () => {
     );
     setCourseInfo(getData.data.specificListKursus);
     setCurrentPage(getData.data.specificListKursus.current_index);
+  };
+
+  const getForumInfo = async () => {
+    const getData = await axios.get(
+      `${host}/listforum?kursus_id=${course._id}`,
+      {
+        headers: {
+          "x-auth-token": authHeader()["x-access-token"],
+        },
+      }
+    );
+    setForumList(getData.data.listforum);
   };
 
   const getUserInfo = async () => {
@@ -53,6 +67,10 @@ const Class = () => {
     getCurrentCourseInfo();
     getUserInfo();
   }, []);
+
+  useEffect(() => {
+    getForumInfo();
+  }, [courseInfo]);
 
   const getCompleteAssignment = async () => {
     const getData = await axios.get(`${host}/tugas`, {
@@ -183,6 +201,24 @@ const Class = () => {
     }
   };
 
+  const [textValue, setTextValue] = useState("");
+
+  const handleComment = async () => {
+    const updateData = await axios.post(
+      `${host}/submitanswer`,
+      {
+        forum_id: forumList[Forum]._id,
+        answer: textValue,
+      },
+      {
+        headers: {
+          "x-auth-token": authHeader()["x-access-token"],
+        },
+      }
+    );
+    alert("Successfully Posted an Answer");
+    getForumInfo();
+  };
   return (
     <>
       <Navbar />
@@ -209,6 +245,13 @@ const Class = () => {
               }}
             >
               Assignment
+            </div>
+            <div
+              onClick={() => {
+                setCurrentBoard("forum");
+              }}
+            >
+              Forums
             </div>
             <div
               onClick={() => {
@@ -530,6 +573,159 @@ const Class = () => {
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+
+          {currentBoard == "forum" && (
+            <div id="content">
+              {Forum == null && (
+                <div>
+                  <h2>{forumList.length} questions</h2>
+                  <table class="table table-striped">
+                    <tbody>
+                      {forumList.map((f, index) => {
+                        const highlightAnswer = f.lanswer.find(
+                          (answer) => answer.ishighlight
+                        );
+
+                        return (
+                          <tr
+                            key={f._id}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              setForum(index);
+                            }}
+                          >
+                            <td
+                              style={{
+                                width: "100px",
+                              }}
+                            >
+                              <br></br>
+                              {highlightAnswer && (
+                                <p
+                                  style={{
+                                    backgroundColor: "#17D577",
+                                    borderRadius: "5px",
+                                    width: "110px",
+                                  }}
+                                >
+                                  ✅{f.lanswer.length} answers &nbsp;
+                                </p>
+                              )}
+
+                              {!highlightAnswer && (
+                                <p
+                                  style={{
+                                    width: "110px",
+                                  }}
+                                >
+                                  {f.lanswer.length} answers &nbsp;
+                                </p>
+                              )}
+                            </td>
+                            <td>
+                              <h3>{f.question}</h3>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {Forum !== null && (
+                <div>
+                  <button
+                    id="submit-btn"
+                    type="button"
+                    onClick={() => {
+                      setForum(null);
+                    }}
+                  >
+                    Back
+                  </button>
+                  <br></br>
+                  <br></br>
+                  <h2 style={{ marginLeft: "10px" }}>
+                    Question: {forumList[Forum].question}
+                  </h2>
+
+                  <h3 style={{ marginLeft: "10px" }}>
+                    {forumList[Forum].lanswer.length} Answers
+                  </h3>
+                  <hr style={{ border: "3px solid #17D577" }}></hr>
+                  {forumList[Forum].lanswer.map((a, index) => {
+                    if (a.ishighlight) {
+                      return (
+                        <div
+                          style={{
+                            marginLeft: "10px",
+                            display: "flex",
+                          }}
+                        >
+                          <div style={{ fontSize: "30pt" }}>✅</div>
+                          <div
+                            style={{
+                              paddingTop: "6px",
+                              width: "100%",
+                              fontSize: "16pt",
+                            }}
+                          >
+                            <div style={{ fontSize: "12pt" }}>
+                              <b>{a.user.name}</b>
+                            </div>
+                            {a.answer}
+                          </div>
+                        </div>
+                      );
+                    }
+                  })}
+                  <hr style={{ border: "3px solid #17D577" }}></hr>
+                  {forumList[Forum].lanswer.map((a, index) => {
+                    if (!a.ishighlight) {
+                      return (
+                        <div
+                          style={{
+                            marginLeft: "10px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              paddingTop: "6px",
+                              width: "100%",
+                              fontSize: "16pt",
+                              marginLeft: "55px",
+                            }}
+                          >
+                            <div style={{ fontSize: "12pt" }}>
+                              <b>{a.user.name}</b>
+                            </div>
+                            {a.answer}
+                          </div>
+                          <hr style={{ border: "1px solid white" }}></hr>
+                        </div>
+                      );
+                    }
+                  })}
+
+                  <div>
+                    <textarea
+                      value={textValue}
+                      onChange={(e) => setTextValue(e.target.value)}
+                      rows={4}
+                      cols={50}
+                      placeholder="Enter text here..."
+                      style={{ resize: "none", width: "100%", height: "200px" }}
+                    />
+                    <br />
+                    <button id="submit-btn" onClick={handleComment}>
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

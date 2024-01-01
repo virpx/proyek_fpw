@@ -157,22 +157,22 @@ const tugasSchema = new mongoose.Schema(
   }
 );
 const forumanswerSchema = new mongoose.Schema({
-  iduser:mongoose.Schema.Types.ObjectId,
-  answer:String,
-  ishighlight:{
-    type:Boolean,
-    default:false,
-  }
-})
+  iduser: mongoose.Schema.Types.ObjectId,
+  answer: String,
+  ishighlight: {
+    type: Boolean,
+    default: false,
+  },
+});
 const forumSchema = new mongoose.Schema({
-  kursus_id:mongoose.Schema.Types.ObjectId,
-  question:String,
-  lanswer:[forumanswerSchema]
-})
+  kursus_id: mongoose.Schema.Types.ObjectId,
+  question: String,
+  lanswer: [forumanswerSchema],
+});
 
 const Transaction = mongoose.model("Transaction", transactionSchema);
 const Kursus = mongoose.model("Kursus", kursusSchema);
 const User = mongoose.model("User", userSchema);
 const Tugas = mongoose.model("Tugas", tugasSchema);
-const Forum = mongoose.model("Forum",forumSchema)
-module.exports = { Kursus, User, Tugas, Transaction,Forum };
+const Forum = mongoose.model("Forum", forumSchema);
+module.exports = { Kursus, User, Tugas, Transaction, Forum };

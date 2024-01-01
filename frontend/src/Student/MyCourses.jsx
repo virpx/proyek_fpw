@@ -20,7 +20,7 @@ const MyCourses = () => {
   useEffect(() => {
     auth();
   }, []);
-
+  console.log(data);
   return (
     <>
       <Navbar />
