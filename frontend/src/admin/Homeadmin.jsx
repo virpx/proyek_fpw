@@ -36,9 +36,7 @@ export default function Homeadmin() {
                                 </ListItemButton>
                             </ListItem>
                             <ListItem disablePadding style={{ background: "#343a40" }} sx={{ margin: 0 }}>
-                                <ListItemButton onClick={() => {
-                                    setopenuser(!openuser)
-                                }}>
+                                <ListItemButton>
                                     <ListItemIcon>
                                         <PersonIcon style={{ color: 'white' }} ></PersonIcon>
                                     </ListItemIcon>
