@@ -4,13 +4,33 @@ import Navbar from "../Navbar";
 import "../css/detailcourse.css";
 import authHeader from "../services/auth-header";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { Buffer } from "buffer";
 
+const host = "http://localhost:3000";
 const DetailCourse = () => {
   const navigate = useNavigate();
   const data = useLoaderData();
   const [course, setCourse] = useState(data.kursus[0]);
   const [teacher, setTeacher] = useState(data.teacher[0]);
-  const [profile, setProfile] = useState("");
+  const [imageSrc, setImageSrc] = useState("");
+  const fetchImage = async () => {
+    try {
+      const response = await axios.get(
+        `${host}/getppteacher?id_user=${teacher._id}`,
+        {
+          responseType: "arraybuffer",
+        }
+      );
+      const imageBase64 = Buffer.from(response.data, "binary").toString(
+        "base64"
+      );
+      const imageSrc = `data:image/jpeg;base64,${imageBase64}`;
+      setImageSrc(imageSrc);
+    } catch (error) {
+      console.error("Error fetching image:", error.message);
+    }
+  };
   const auth = () => {
     var header = authHeader();
     if (header == null) {
@@ -20,11 +40,9 @@ const DetailCourse = () => {
 
   useEffect(() => {
     auth();
-
-    var path = "";
-    setProfile(path);
+    fetchImage();
   }, []);
-  console.log(profile);
+
   return (
     <>
       <Navbar />
@@ -42,7 +60,7 @@ const DetailCourse = () => {
             {course.materi.map((c, index) => {
               return (
                 <li>
-                  Material {index + 1}: {c.path}
+                  Material {index + 1}: {c.name}
                 </li>
               );
             })}
@@ -52,14 +70,14 @@ const DetailCourse = () => {
           <h2 id="course-overview-content">Instructor Information</h2>
           <div className="instructor-profile">
             <img
-              src=""
+              src={imageSrc}
               alt="Instructor Profile"
               width={100}
               height={100}
               id="profile-image"
             />
             <div id="instructor-info-container">
-              <p className="instructor-info-text">{teacher.name}</p>
+              <p className="instructor-info-text">Name: {teacher.name}</p>
               <p className="instructor-info-text">Email: {teacher.email}</p>
             </div>
           </div>

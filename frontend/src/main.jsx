@@ -219,6 +219,34 @@ const router = createBrowserRouter([
                   },
                   {
                     path: "addquiz",
+                    loader: (data) => {
+                      return ["add", data.params.id];
+                    },
+                    element: <Addquiz></Addquiz>,
+                  },
+                  {
+                    path: "editquiz/:idquiz",
+                    loader: async (data) => {
+                      var hasil = await axios.get(
+                        "http://localhost:3000/teacher/getquizdetail/" +
+                          data.params.id +
+                          "/" +
+                          data.params.idquiz,
+                        {
+                          headers: {
+                            "x-auth-token": JSON.parse(
+                              localStorage.getItem("user")
+                            ).token,
+                          },
+                        }
+                      );
+                      return [
+                        "edit",
+                        data.params.id,
+                        data.params.idquiz,
+                        hasil.data,
+                      ];
+                    },
                     element: <Addquiz></Addquiz>,
                   },
                   {

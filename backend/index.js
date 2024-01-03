@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const { User, Kursus, Transaction, Tugas, Forum } = require("./models/data");
 const uploadProfile = require("./controller/uploadProfile");
 const uploadAssignment = require("./controller/uploadAssignment");
+const getPPTeacher = require("./controller/getPPTeacher");
 const app = express();
 const port = 3000;
 const cors = require("cors");
@@ -371,6 +372,9 @@ app.post("/uploadpp", uploadProfile.singleFile);
 
 //get pp
 app.get("/getpp", uploadProfile.getImage);
+
+//get ppteacher
+app.get("/getppteacher", getPPTeacher.getPPTeacher);
 
 //submit assignment
 app.post("/submitassignment", uploadAssignment.singleFile);

@@ -40,7 +40,8 @@ const Login = () => {
 
           if (result.data.user[0].role == 0) {
             navigate("/mycourses/" + result.data.user[0]._id);
-          } else {
+          } else if (result.data.user[0].role == 1) {
+            navigate("/teacher");
           }
         } catch (error) {
           console.log(error);

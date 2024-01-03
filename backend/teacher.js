@@ -1,831 +1,1003 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const { User, Kursus, Tugas, Forum } = require('./models/data');
-const multer = require('multer');
+const { User, Kursus, Tugas, Forum } = require("./models/data");
+const multer = require("multer");
 const secret = "rahasia";
-const fs = require('fs');
+const fs = require("fs");
 router.get("/ceklogin", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      data = jwt.verify(token, secret);
+      if (data.role == 1) {
+        return res.status(200).send("valid");
+      } else {
         return res.status(200).send("invalid");
-    } else {
-        try {
-            data = jwt.verify(token, secret);
-            if (data.role == 1) {
-                return res.status(200).send("valid");
-            } else {
-                return res.status(200).send("invalid");
-            }
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
+      }
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+  }
+});
 router.get("/teacherdata", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-            const datauser = await User.findOne(
-                { _id: tokendata._id },
-            )
-            const datakursus = await Kursus.find({
-                owner: datauser._id
-            });
-            const datamurid = await User.find();
-            const datamuridenroll = []
-            for (const iterator of datakursus) {
-                for (const iterator2 of datamurid) {
-                    for (const iterator3 of iterator2.listkursus) {
-                        if (iterator3.kursus.toString() == iterator._id.toString()) {
-                            datamuridenroll.push(iterator2)
-                            break
-                        }
-                    }
-                }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+      const datauser = await User.findOne({ _id: tokendata._id });
+      const datakursus = await Kursus.find({
+        owner: datauser._id,
+      });
+      const datamurid = await User.find();
+      const datamuridenroll = [];
+      for (const iterator of datakursus) {
+        for (const iterator2 of datamurid) {
+          for (const iterator3 of iterator2.listkursus) {
+            if (iterator3.kursus.toString() == iterator._id.toString()) {
+              datamuridenroll.push(iterator2);
+              break;
             }
-            const date = new Date(datauser.createdAt);
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const tanggaljoin = new Intl.DateTimeFormat('id-ID', options).format(date);
-            var kategorikursus = ["All"]
-            for (const iterator of datakursus) {
-                if (kategorikursus.indexOf(iterator.kategori) == -1) {
-                    kategorikursus.push(iterator.kategori)
-                }
-            }
-            var penjualantahunini = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            const user = await User.find();
-            for (const iterator of datakursus) {
-                for (const iterator2 of user) {
-                    const indexuser = iterator2.listkursus.findIndex(listkursus => listkursus.kursus.equals(iterator._id.toString()));
-                    if (indexuser != -1) {
-                        var bulanpenjualan = new Date(iterator2.listkursus[indexuser].createdAt);
-                        penjualantahunini[bulanpenjualan.getMonth()] += 1;
-                    }
-                }
-            }
-            var dataout = {}
-            dataout.userdata = {
-                nama: datauser.name,
-                join: tanggaljoin
-            }
-            dataout.kursus = {
-                jumlah: datakursus.length,
-                kategori: kategorikursus,
-                lkursus: datakursus
-            }
-            dataout.student = {
-                jumlah: datamuridenroll.length
-            }
-            dataout.chart = penjualantahunini
-            return res.status(200).json(dataout);
-        } catch (err) {
-            return res.status(200).send("invalid");
+          }
         }
+      }
+      const date = new Date(datauser.createdAt);
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      const tanggaljoin = new Intl.DateTimeFormat("id-ID", options).format(
+        date
+      );
+      var kategorikursus = ["All"];
+      for (const iterator of datakursus) {
+        if (kategorikursus.indexOf(iterator.kategori) == -1) {
+          kategorikursus.push(iterator.kategori);
+        }
+      }
+      var penjualantahunini = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      const user = await User.find();
+      for (const iterator of datakursus) {
+        for (const iterator2 of user) {
+          const indexuser = iterator2.listkursus.findIndex((listkursus) =>
+            listkursus.kursus.equals(iterator._id.toString())
+          );
+          if (indexuser != -1) {
+            var bulanpenjualan = new Date(
+              iterator2.listkursus[indexuser].createdAt
+            );
+            penjualantahunini[bulanpenjualan.getMonth()] += 1;
+          }
+        }
+      }
+      var dataout = {};
+      dataout.userdata = {
+        nama: datauser.name,
+        join: tanggaljoin,
+      };
+      dataout.kursus = {
+        jumlah: datakursus.length,
+        kategori: kategorikursus,
+        lkursus: datakursus,
+      };
+      dataout.student = {
+        jumlah: datamuridenroll.length,
+      };
+      dataout.chart = penjualantahunini;
+      return res.status(200).json(dataout);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+  }
+});
 router.get("/courselist", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        var dataout = []
-        const datakursus = await Kursus.find({
-            owner: tokendata._id
-        })
-        const murid = await User.find();
-        for (const iterator of datakursus) {
-            var bisadelete = 1;
-            for (const iterator2 of murid) {
-                for (const iterator3 of iterator2.listkursus) {
-                    if (iterator3.kursus.toString() == iterator._id.toString()) {
-                        bisadelete = 0;
-                        break
-                    }
-                }
-                if (bisadelete == 0) {
-                    // supaya murid lain tidak perlu di cek
-                    break;
-                }
-            }
-            var databaru = []
-            databaru.push(bisadelete)
-            databaru.push(iterator)
-            dataout.push(databaru)
-        }
-        return res.status(200).json(dataout)
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    var dataout = [];
+    const datakursus = await Kursus.find({
+      owner: tokendata._id,
+    });
+    const murid = await User.find();
+    for (const iterator of datakursus) {
+      var bisadelete = 1;
+      for (const iterator2 of murid) {
+        for (const iterator3 of iterator2.listkursus) {
+          if (iterator3.kursus.toString() == iterator._id.toString()) {
+            bisadelete = 0;
+            break;
+          }
+        }
+        if (bisadelete == 0) {
+          // supaya murid lain tidak perlu di cek
+          break;
+        }
+      }
+      var databaru = [];
+      databaru.push(bisadelete);
+      databaru.push(iterator);
+      dataout.push(databaru);
+    }
+    return res.status(200).json(dataout);
+  }
+});
 var filenameupload = "";
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "thumb_kursus/")
-    },
-    filename: (req, file, cb) => {
-        var sekarang = String(Date.now())
-        filenameupload = sekarang
-        cb(null, sekarang)
-    }
-})
-const upload = multer({ storage: storage })
+  destination: (req, file, cb) => {
+    cb(null, "thumb_kursus/");
+  },
+  filename: (req, file, cb) => {
+    var sekarang = String(Date.now());
+    filenameupload = sekarang;
+    cb(null, sekarang);
+  },
+});
+const upload = multer({ storage: storage });
 router.post("/addkursus", upload.single("thumbimg"), async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    var owner = ""
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-            owner = tokendata._id.toString();
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { nama_kursus, kategori, harga, deskripsi } = req.body;
-        await Kursus.insertMany({
-            nama_kursus: nama_kursus,
-            kategori: kategori,
-            harga: parseInt(harga),
-            deskripsi: deskripsi,
-            owner: owner,
-            thumb_path: "thumb_kursus/" + filenameupload,
-            active: 1,
-            materi: [],
-            assignment: [],
-            quiz: [],
-        })
-        return res.status(200).send("success");
+  const token = req.headers["x-auth-token"];
+  var owner = "";
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+      owner = tokendata._id.toString();
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { nama_kursus, kategori, harga, deskripsi } = req.body;
+    await Kursus.insertMany({
+      nama_kursus: nama_kursus,
+      kategori: kategori,
+      harga: parseInt(harga),
+      deskripsi: deskripsi,
+      owner: owner,
+      thumb_path: "thumb_kursus/" + filenameupload,
+      active: 1,
+      materi: [],
+      assignment: [],
+      quiz: [],
+    });
+    return res.status(200).send("success");
+  }
+});
 router.get("/getimage", (req, res) => {
-    var pathe = (atob(req.query.pathe)).toString().split("/")
-    return res.sendFile(pathe[1], { root: pathe[0] })
-})
+  var pathe = atob(req.query.pathe).toString().split("/");
+  return res.sendFile(pathe[1], { root: pathe[0] });
+});
 router.get("/getcoursedetail/:id", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    var owner = ""
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-            owner = tokendata._id.toString();
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        var hasil = await Kursus.findOne({
-            _id: req.params.id
-        })
-        return res.status(200).json(hasil)
+  const token = req.headers["x-auth-token"];
+  var owner = "";
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+      owner = tokendata._id.toString();
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    var hasil = await Kursus.findOne({
+      _id: req.params.id,
+    });
+    return res.status(200).json(hasil);
+  }
+});
 router.post("/updatekursusnoimage", async (req, res) => {
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+      owner = tokendata._id.toString();
+    } catch (err) {
+      return res.status(200).send("invalid");
+    }
+    const { nama_kursus, kategori, harga, deskripsi, id } = req.body;
+    await Kursus.updateOne(
+      {
+        _id: id,
+      },
+      {
+        nama_kursus: nama_kursus,
+        kategori: kategori,
+        harga: harga,
+        deskripsi: deskripsi,
+      }
+    );
+    return res.status(200).send("success");
+  }
+});
+router.post(
+  "/updatekursuswithimage",
+  upload.single("thumbimg"),
+  async (req, res) => {
     const token = req.headers["x-auth-token"];
     if (token == null || token == "") {
-        return res.status(200).send("invalid");
+      return res.status(200).send("invalid");
     } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-            owner = tokendata._id.toString();
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { nama_kursus, kategori, harga, deskripsi, id } = req.body;
-        await Kursus.updateOne({
-            _id: id
-        }, {
-            nama_kursus: nama_kursus,
-            kategori: kategori,
-            harga: harga,
-            deskripsi: deskripsi
-        })
-        return res.status(200).send("success")
-    }
-})
-router.post("/updatekursuswithimage", upload.single("thumbimg"), async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
+      try {
+        tokendata = jwt.verify(token, secret);
+        owner = tokendata._id.toString();
+      } catch (err) {
         return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-            owner = tokendata._id.toString();
-        } catch (err) {
-            return res.status(200).send("invalid");
+      }
+      const { nama_kursus, kategori, harga, deskripsi, id } = req.body;
+      const ambilkursus = await Kursus.findOne({
+        _id: id,
+      });
+      fs.unlink("./" + ambilkursus.thumb_path, (err) => {
+        if (err) {
+          throw err;
         }
-        const { nama_kursus, kategori, harga, deskripsi, id } = req.body;
-        const ambilkursus = await Kursus.findOne({
-            _id: id
-        })
-        fs.unlink("./" + ambilkursus.thumb_path, (err) => {
-            if (err) {
-                throw err;
-            }
-        })
-        await Kursus.updateOne({
-            _id: id
-        }, {
-            nama_kursus: nama_kursus,
-            kategori: kategori,
-            harga: harga,
-            deskripsi: deskripsi,
-            thumb_path: "thumb_kursus/" + filenameupload
-        })
-        return res.status(200).send("success")
+      });
+      await Kursus.updateOne(
+        {
+          _id: id,
+        },
+        {
+          nama_kursus: nama_kursus,
+          kategori: kategori,
+          harga: harga,
+          deskripsi: deskripsi,
+          thumb_path: "thumb_kursus/" + filenameupload,
+        }
+      );
+      return res.status(200).send("success");
     }
-})
+  }
+);
 router.get("/deletekursus/:id", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { id } = req.params;
-        const ambilkursus = await Kursus.findOne({
-            _id: id
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            fs.unlink("./" + ambilkursus.thumb_path, (err) => {
-                if (err) {
-                    throw err;
-                }
-            })
-            await Kursus.deleteOne({
-                _id: id
-            })
-            return res.status(200).send("success")
-        } else {
-            return res.status(403).send("gagal");
-        }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { id } = req.params;
+    const ambilkursus = await Kursus.findOne({
+      _id: id,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      fs.unlink("./" + ambilkursus.thumb_path, (err) => {
+        if (err) {
+          throw err;
+        }
+      });
+      await Kursus.deleteOne({
+        _id: id,
+      });
+      return res.status(200).send("success");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
 router.get("/aktifmatikankursus/:id", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { id } = req.params;
-        const ambilkursus = await Kursus.findOne({
-            _id: id
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            await Kursus.updateOne({
-                _id: id
-            }, {
-                active: (ambilkursus.active * -1)
-            })
-            return res.status(200).send("success")
-        } else {
-            return res.status(403).send("gagal");
-        }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { id } = req.params;
+    const ambilkursus = await Kursus.findOne({
+      _id: id,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      await Kursus.updateOne(
+        {
+          _id: id,
+        },
+        {
+          active: ambilkursus.active * -1,
+        }
+      );
+      return res.status(200).send("success");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
 router.get("/getcenter/:id", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { id } = req.params;
-        const ambilkursus = await Kursus.findOne({
-            _id: id
-        })
-        const murid = await User.find();
-        var bisadelete = 1;
-        for (const iterator2 of murid) {
-            for (const iterator3 of iterator2.listkursus) {
-                if (iterator3.kursus.toString() == id) {
-                    bisadelete = 0;
-                    break
-                }
-            }
-            if (bisadelete == 0) {
-                // supaya murid lain tidak perlu di cek
-                break;
-            }
-        }
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            return res.status(200).json([bisadelete, ambilkursus])
-        } else {
-            return res.status(403).send("gagal");
-        }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { id } = req.params;
+    const ambilkursus = await Kursus.findOne({
+      _id: id,
+    });
+    const murid = await User.find();
+    var bisadelete = 1;
+    for (const iterator2 of murid) {
+      for (const iterator3 of iterator2.listkursus) {
+        if (iterator3.kursus.toString() == id) {
+          bisadelete = 0;
+          break;
+        }
+      }
+      if (bisadelete == 0) {
+        // supaya murid lain tidak perlu di cek
+        break;
+      }
+    }
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      return res.status(200).json([bisadelete, ambilkursus]);
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
 const storagemateri = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "materi_pdf/")
-    },
-    filename: (req, file, cb) => {
-        var sekarang = String(Date.now())
-        filenameupload = sekarang + ".pdf"
-        cb(null, sekarang + ".pdf")
-    }
-})
-const uploadmateri = multer({ storage: storagemateri })
+  destination: (req, file, cb) => {
+    cb(null, "materi_pdf/");
+  },
+  filename: (req, file, cb) => {
+    var sekarang = String(Date.now());
+    filenameupload = sekarang + ".pdf";
+    cb(null, sekarang + ".pdf");
+  },
+});
+const uploadmateri = multer({ storage: storagemateri });
 router.post("/addmateri", uploadmateri.single("filepdf"), async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { nama, idkursus } = req.body
-        const ambilkursus = await Kursus.findOne({
-            _id: idkursus
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            const databaru = {
-                path: "materi_pdf/" + filenameupload,
-                name: nama
-            }
-            await Kursus.updateOne({
-                _id: idkursus
-            }, { $push: { materi: databaru } })
-            return res.status(200).send("success")
-        } else {
-            return res.status(403).send("gagal");
-        }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { nama, idkursus } = req.body;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const databaru = {
+        path: "materi_pdf/" + filenameupload,
+        name: nama,
+      };
+      await Kursus.updateOne(
+        {
+          _id: idkursus,
+        },
+        { $push: { materi: databaru } }
+      );
+      return res.status(200).send("success");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
 router.get("/gettopicdetail/:idkursus/:idmateri", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { idmateri, idkursus } = req.params
-        const ambilkursus = await Kursus.findOne({
-            _id: idkursus
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            const ambilmateri = ambilkursus.materi.find(materi => materi._id.equals(idmateri));
-            return res.status(200).json(ambilmateri)
-        } else {
-            return res.status(403).send("gagal");
-        }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { idmateri, idkursus } = req.params;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const ambilmateri = ambilkursus.materi.find((materi) =>
+        materi._id.equals(idmateri)
+      );
+      return res.status(200).json(ambilmateri);
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
 router.post("/editmateri", async (req, res) => {
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
+    }
+    const { idmateri, idkursus, nama } = req.body;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const ambilmateriIndex = ambilkursus.materi.findIndex((materi) =>
+        materi._id.equals(idmateri)
+      );
+      ambilkursus.materi[ambilmateriIndex].name = nama;
+      await ambilkursus.save();
+      return res.status(200).send("sukses");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
+router.post(
+  "/editmateripdf",
+  uploadmateri.single("filepdf"),
+  async (req, res) => {
     const token = req.headers["x-auth-token"];
     if (token == null || token == "") {
-        return res.status(200).send("invalid");
+      return res.status(200).send("invalid");
     } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { idmateri, idkursus, nama } = req.body
-        const ambilkursus = await Kursus.findOne({
-            _id: idkursus
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            const ambilmateriIndex = ambilkursus.materi.findIndex(materi => materi._id.equals(idmateri));
-            ambilkursus.materi[ambilmateriIndex].name = nama;
-            await ambilkursus.save()
-            return res.status(200).send("sukses")
-        } else {
-            return res.status(403).send("gagal");
-        }
-    }
-})
-router.post("/editmateripdf", uploadmateri.single("filepdf"), async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
+      try {
+        tokendata = jwt.verify(token, secret);
+      } catch (err) {
         return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { idmateri, idkursus, nama } = req.body
-        const ambilkursus = await Kursus.findOne({
-            _id: idkursus
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            const ambilmateriIndex = ambilkursus.materi.findIndex(materi => materi._id.equals(idmateri));
-            fs.unlink("./" + ambilkursus.materi[ambilmateriIndex].path, (err) => {
-                if (err) {
-                    throw err;
-                }
-            })
-            ambilkursus.materi[ambilmateriIndex].path = "materi_pdf/" + filenameupload
-            ambilkursus.materi[ambilmateriIndex].name = nama
-            ambilkursus.save()
-            return res.status(200).send("sukses")
-        } else {
-            return res.status(403).send("gagal");
-        }
+      }
+      const { idmateri, idkursus, nama } = req.body;
+      const ambilkursus = await Kursus.findOne({
+        _id: idkursus,
+      });
+      if (ambilkursus.owner == tokendata._id.toString()) {
+        const ambilmateriIndex = ambilkursus.materi.findIndex((materi) =>
+          materi._id.equals(idmateri)
+        );
+        fs.unlink("./" + ambilkursus.materi[ambilmateriIndex].path, (err) => {
+          if (err) {
+            throw err;
+          }
+        });
+        ambilkursus.materi[ambilmateriIndex].path =
+          "materi_pdf/" + filenameupload;
+        ambilkursus.materi[ambilmateriIndex].name = nama;
+        ambilkursus.save();
+        return res.status(200).send("sukses");
+      } else {
+        return res.status(403).send("gagal");
+      }
     }
-})
+  }
+);
 router.get("/removemateri/:idkursus/:idmateri", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { idmateri, idkursus, nama } = req.params
-        const ambilkursus = await Kursus.findOne({
-            _id: idkursus
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            const ambilmateriIndex = ambilkursus.materi.findIndex(materi => materi._id.equals(idmateri));
-            ambilkursus.materi.splice(ambilmateriIndex, 1);
-            await ambilkursus.save();
-            return res.status(200).send("sukses")
-        } else {
-            return res.status(403).send("gagal");
-        }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { idmateri, idkursus, nama } = req.params;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const ambilmateriIndex = ambilkursus.materi.findIndex((materi) =>
+        materi._id.equals(idmateri)
+      );
+      ambilkursus.materi.splice(ambilmateriIndex, 1);
+      await ambilkursus.save();
+      return res.status(200).send("sukses");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
+
 router.post("/addtask", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { idkursus, nama, deskripsi } = req.body
-        const ambilkursus = await Kursus.findOne({
-            _id: idkursus
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            const databaru = {
-                name: nama,
-                desc: deskripsi
-            }
-            await Kursus.updateOne({
-                _id: idkursus
-            }, { $push: { assignment: databaru } })
-            return res.status(200).send("sukses")
-        } else {
-            return res.status(403).send("gagal");
-        }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { idkursus, nama, deskripsi } = req.body;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const databaru = {
+        name: nama,
+        desc: deskripsi,
+      };
+      await Kursus.updateOne(
+        {
+          _id: idkursus,
+        },
+        { $push: { assignment: databaru } }
+      );
+      return res.status(200).send("sukses");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
 router.get("/gettaskdetail/:idkursus/:idtask", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { idtask, idkursus } = req.params
-        const ambilkursus = await Kursus.findOne({
-            _id: idkursus
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            const ambiltask = ambilkursus.assignment.find(assignment => assignment._id.equals(idtask));
-            return res.status(200).json(ambiltask)
-        } else {
-            return res.status(403).send("gagal");
-        }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { idtask, idkursus } = req.params;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const ambiltask = ambilkursus.assignment.find((assignment) =>
+        assignment._id.equals(idtask)
+      );
+      return res.status(200).json(ambiltask);
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
 router.post("/edittask", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { idtask, idkursus, nama, deskripsi } = req.body
-        const ambilkursus = await Kursus.findOne({
-            _id: idkursus
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            const ambiltaskindex = ambilkursus.assignment.findIndex(assignment => assignment._id.equals(idtask));
-            ambilkursus.assignment[ambiltaskindex].name = nama;
-            ambilkursus.assignment[ambiltaskindex].desc = deskripsi;
-            await ambilkursus.save()
-            return res.status(200).send("sukses")
-        } else {
-            return res.status(403).send("gagal");
-        }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { idtask, idkursus, nama, deskripsi } = req.body;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const ambiltaskindex = ambilkursus.assignment.findIndex((assignment) =>
+        assignment._id.equals(idtask)
+      );
+      ambilkursus.assignment[ambiltaskindex].name = nama;
+      ambilkursus.assignment[ambiltaskindex].desc = deskripsi;
+      await ambilkursus.save();
+      return res.status(200).send("sukses");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
 router.get("/removetask/:idkursus/:idtask", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { idkursus, idtask } = req.params
-        const ambilkursus = await Kursus.findOne({
-            _id: idkursus
-        })
-        if (ambilkursus.owner == tokendata._id.toString()) {
-            const ambiltaskindex = ambilkursus.assignment.findIndex(assignment => assignment._id.equals(idtask));
-            ambilkursus.assignment.splice(ambiltaskindex, 1);
-            await ambilkursus.save();
-            return res.status(200).send("sukses")
-        } else {
-            return res.status(403).send("gagal");
-        }
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { idkursus, idtask } = req.params;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const ambiltaskindex = ambilkursus.assignment.findIndex((assignment) =>
+        assignment._id.equals(idtask)
+      );
+      ambilkursus.assignment.splice(ambiltaskindex, 1);
+      await ambilkursus.save();
+      return res.status(200).send("sukses");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
+
 router.get("/taskkumpul/:idtask", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { idtask } = req.params
-        console.log(idtask)
-        const usertugas = await Tugas.find({
-            tugas_id: idtask
-        })
-        var out = []
-        for (const iterator of usertugas) {
-            console.log(iterator)
-            const usere = await User.findOne({
-                _id: iterator.user_id
-            })
-            var datapush = {
-                path: iterator.path,
-                namauser: usere.name,
-                nilai: iterator.score,
-                id: iterator._id.toString()
-            }
-            out.push(datapush)
-        }
-        console.log(out)
-        return res.status(200).json(out);
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { idtask } = req.params;
+    console.log(idtask);
+    const usertugas = await Tugas.find({
+      tugas_id: idtask,
+    });
+    var out = [];
+    for (const iterator of usertugas) {
+      console.log(iterator);
+      const usere = await User.findOne({
+        _id: iterator.user_id,
+      });
+      var datapush = {
+        path: iterator.path,
+        namauser: usere.name,
+        nilai: iterator.score,
+        id: iterator._id.toString(),
+      };
+      out.push(datapush);
+    }
+    console.log(out);
+    return res.status(200).json(out);
+  }
+});
 router.post("/simpannilai", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const { idsubmit, nilai } = req.body
-        console.log(req.body)
-        await Tugas.updateMany({
-            _id: idsubmit
-        }, {
-            score: nilai
-        })
-        return res.status(200).send("sukses");
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const { idsubmit, nilai } = req.body;
+    console.log(req.body);
+    await Tugas.updateMany(
+      {
+        _id: idsubmit,
+      },
+      {
+        score: nilai,
+      }
+    );
+    return res.status(200).send("sukses");
+  }
+});
 router.get("/reportdata", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-            var idguru = tokendata._id.toString();
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const kursusguru = await Kursus.find({
-            owner: idguru
-        })
-        var jumlahearning = 0;
-        var jumlahstudent = 0;
-        var penjualantahunini = [
-            {
-                jumlah: 0,
-                month: 'Jan',
-            },
-            {
-                jumlah: 0,
-                month: 'Feb',
-            },
-            {
-                jumlah: 0,
-                month: 'Mar',
-            },
-            {
-                jumlah: 0,
-                month: 'Apr',
-            },
-            {
-                jumlah: 0,
-                month: 'May',
-            },
-            {
-                jumlah: 0,
-                month: 'June',
-            },
-            {
-                jumlah: 0,
-                month: 'July',
-            },
-            {
-                jumlah: 0,
-                month: 'Aug',
-            },
-            {
-                jumlah: 0,
-                month: 'Sept',
-            },
-            {
-                jumlah: 0,
-                month: 'Oct',
-            },
-            {
-                jumlah: 0,
-                month: 'Nov',
-            },
-            {
-                jumlah: 0,
-                month: 'Dec',
-            },
-        ]
-        var pendapatantahunini = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        const user = await User.find();
-        for (const iterator of kursusguru) {
-            var tmpjumlahstudent = 0;
-            for (const iterator2 of user) {
-                const indexuser = iterator2.listkursus.findIndex(listkursus => listkursus.kursus.equals(iterator._id.toString()));
-                if (indexuser != -1) {
-                    var bulanpenjualan = new Date(iterator2.listkursus[indexuser].createdAt);
-                    penjualantahunini[bulanpenjualan.getMonth()].jumlah += 1;
-                    pendapatantahunini[bulanpenjualan.getMonth()] += iterator.harga
-                    tmpjumlahstudent++;
-                }
-            }
-            jumlahstudent += tmpjumlahstudent;
-            jumlahearning += (tmpjumlahstudent * iterator.harga)
-        }
-        var dataout = {
-            jumlahkursus: kursusguru.length,
-            jumlahearning: jumlahearning,
-            jumlahstudent: jumlahstudent,
-            penjualantahunini: penjualantahunini,
-            pendapatantahunini: pendapatantahunini
-        }
-        return res.status(200).json(dataout)
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+      var idguru = tokendata._id.toString();
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const kursusguru = await Kursus.find({
+      owner: idguru,
+    });
+    var jumlahearning = 0;
+    var jumlahstudent = 0;
+    var penjualantahunini = [
+      {
+        jumlah: 0,
+        month: "Jan",
+      },
+      {
+        jumlah: 0,
+        month: "Feb",
+      },
+      {
+        jumlah: 0,
+        month: "Mar",
+      },
+      {
+        jumlah: 0,
+        month: "Apr",
+      },
+      {
+        jumlah: 0,
+        month: "May",
+      },
+      {
+        jumlah: 0,
+        month: "June",
+      },
+      {
+        jumlah: 0,
+        month: "July",
+      },
+      {
+        jumlah: 0,
+        month: "Aug",
+      },
+      {
+        jumlah: 0,
+        month: "Sept",
+      },
+      {
+        jumlah: 0,
+        month: "Oct",
+      },
+      {
+        jumlah: 0,
+        month: "Nov",
+      },
+      {
+        jumlah: 0,
+        month: "Dec",
+      },
+    ];
+    var pendapatantahunini = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const user = await User.find();
+    for (const iterator of kursusguru) {
+      var tmpjumlahstudent = 0;
+      for (const iterator2 of user) {
+        const indexuser = iterator2.listkursus.findIndex((listkursus) =>
+          listkursus.kursus.equals(iterator._id.toString())
+        );
+        if (indexuser != -1) {
+          var bulanpenjualan = new Date(
+            iterator2.listkursus[indexuser].createdAt
+          );
+          penjualantahunini[bulanpenjualan.getMonth()].jumlah += 1;
+          pendapatantahunini[bulanpenjualan.getMonth()] += iterator.harga;
+          tmpjumlahstudent++;
+        }
+      }
+      jumlahstudent += tmpjumlahstudent;
+      jumlahearning += tmpjumlahstudent * iterator.harga;
+    }
+    var dataout = {
+      jumlahkursus: kursusguru.length,
+      jumlahearning: jumlahearning,
+      jumlahstudent: jumlahstudent,
+      penjualantahunini: penjualantahunini,
+      pendapatantahunini: pendapatantahunini,
+    };
+    return res.status(200).json(dataout);
+  }
+});
 router.get("/getchannel", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-            var idguru = tokendata._id.toString();
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const lkursus = await Kursus.find({
-            owner: idguru
-        })
-        var dataforum = []
-        for (const iterator of lkursus) {
-            const forume = await Forum.find({
-                kursus_id: iterator._id
-            })
-            for (const iterator2 of forume) {
-                var answere = null
-                for (const iterator3 of iterator2.lanswer) {
-                    if (iterator3.ishighlight) {
-                        answere = iterator3.answer
-                        break
-                    }
-                }
-                dataforum.push([iterator.nama_kursus, iterator2, answere])
-            }
-        }
-        return res.status(200).json(dataforum);
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+      var idguru = tokendata._id.toString();
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
+    const lkursus = await Kursus.find({
+      owner: idguru,
+    });
+    var dataforum = [];
+    for (const iterator of lkursus) {
+      const forume = await Forum.find({
+        kursus_id: iterator._id,
+      });
+      for (const iterator2 of forume) {
+        var answere = null;
+        for (const iterator3 of iterator2.lanswer) {
+          if (iterator3.ishighlight) {
+            answere = iterator3.answer;
+            break;
+          }
+        }
+        dataforum.push([iterator.nama_kursus, iterator2, answere]);
+      }
+    }
+    return res.status(200).json(dataforum);
+  }
+});
 router.post("/addanswer", async (req, res) => {
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-            var idguru = tokendata._id.toString();
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const {idforum,jawaban} = req.body
-        var forumload = await Forum.findOne({
-            _id:idforum
-        })
-        for(var i=0;i<forumload.lanswer.length;i++){
-            forumload.lanswer[i].ishighlight = false
-        }
-        forumload.save();
-        var databaru = {
-            iduser:idguru,
-            answer:jawaban,
-            ishighlight:true,
-        }
-        await Forum.updateOne({
-            _id: idforum
-        }, { $push: { lanswer: databaru } })
-        return res.status(200).send("sukses");
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+      var idguru = tokendata._id.toString();
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
-router.get("/getforumdetail/:idforum",async (req,res)=>{
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const {idforum} = req.params
-        const forumout = await Forum.findOne({
-            _id:idforum
-        })
-        return res.status(200).json(forumout)
+    const { idforum, jawaban } = req.body;
+    var forumload = await Forum.findOne({
+      _id: idforum,
+    });
+    for (var i = 0; i < forumload.lanswer.length; i++) {
+      forumload.lanswer[i].ishighlight = false;
     }
-})
-router.get("/getnamauser/:iduser",async (req,res)=>{
-    const {iduser} = req.params
-    const user = await User.findOne({
-        _id:iduser.toString()
-    })
-    return res.status(200).send(user.name)
-})
-router.get("/highlight/:idanswer/:idforum",async (req,res)=>{
-    const token = req.headers["x-auth-token"];
-    if (token == null || token == "") {
-        return res.status(200).send("invalid");
-    } else {
-        try {
-            tokendata = jwt.verify(token, secret);
-        } catch (err) {
-            return res.status(200).send("invalid");
-        }
-        const {idforum,idanswer,jawaban} = req.params
-        var forumload = await Forum.findOne({
-            _id:idforum
-        })
-        for(var i=0;i<forumload.lanswer.length;i++){
-            forumload.lanswer[i].ishighlight = false
-        }
-        for(var i=0;i<forumload.lanswer.length;i++){
-            if(forumload.lanswer[i]._id.toString() == idanswer){
-                forumload.lanswer[i].ishighlight = true
-                break;
-            }
-        }
-        forumload.save();
-        return res.status(200).send("sukses");
+    forumload.save();
+    var databaru = {
+      iduser: idguru,
+      answer: jawaban,
+      ishighlight: true,
+    };
+    await Forum.updateOne(
+      {
+        _id: idforum,
+      },
+      { $push: { lanswer: databaru } }
+    );
+    return res.status(200).send("sukses");
+  }
+});
+router.get("/getforumdetail/:idforum", async (req, res) => {
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
     }
-})
-module.exports = router
+    const { idforum } = req.params;
+    const forumout = await Forum.findOne({
+      _id: idforum,
+    });
+    return res.status(200).json(forumout);
+  }
+});
+router.get("/getnamauser/:iduser", async (req, res) => {
+  const { iduser } = req.params;
+  const user = await User.findOne({
+    _id: iduser.toString(),
+  });
+  return res.status(200).send(user.name);
+});
+router.get("/highlight/:idanswer/:idforum", async (req, res) => {
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
+    }
+    const { idforum, idanswer, jawaban } = req.params;
+    var forumload = await Forum.findOne({
+      _id: idforum,
+    });
+    for (var i = 0; i < forumload.lanswer.length; i++) {
+      forumload.lanswer[i].ishighlight = false;
+    }
+    for (var i = 0; i < forumload.lanswer.length; i++) {
+      if (forumload.lanswer[i]._id.toString() == idanswer) {
+        forumload.lanswer[i].ishighlight = true;
+        break;
+      }
+    }
+    forumload.save();
+    return res.status(200).send("sukses");
+  }
+});
+
+//remove quiz
+router.get("/removequiz/:idkursus/:idquiz", async (req, res) => {
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
+    }
+    const { idkursus, idquiz } = req.params;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const ambilquizindex = ambilkursus.quiz.findIndex((quiz) =>
+        quiz._id.equals(idquiz)
+      );
+      ambilkursus.quiz.splice(ambilquizindex, 1);
+      await ambilkursus.save();
+      return res.status(200).send("sukses");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
+
+//addquiz
+router.post("/addquiz", async (req, res) => {
+  let tokendata;
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
+    }
+    const { idkursus, name, questions } = req.body;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const databaru = {
+        name: name,
+        questions: questions,
+      };
+      await Kursus.updateOne(
+        {
+          _id: idkursus,
+        },
+        { $push: { quiz: databaru } }
+      );
+      return res.status(200).send("sukses");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
+
+//getquiz
+router.get("/getquizdetail/:idkursus/:idquiz", async (req, res) => {
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
+    }
+    const { idquiz, idkursus } = req.params;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const ambilquiz = ambilkursus.quiz.find((quiz) =>
+        quiz._id.equals(idquiz)
+      );
+      return res.status(200).json(ambilquiz);
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
+
+//editquiz
+router.post("/editquiz", async (req, res) => {
+  const token = req.headers["x-auth-token"];
+  if (token == null || token == "") {
+    return res.status(200).send("invalid");
+  } else {
+    try {
+      tokendata = jwt.verify(token, secret);
+    } catch (err) {
+      return res.status(200).send("invalid");
+    }
+    const { idquiz, idkursus, name, questions } = req.body;
+    const ambilkursus = await Kursus.findOne({
+      _id: idkursus,
+    });
+    if (ambilkursus.owner == tokendata._id.toString()) {
+      const ambilquizindex = ambilkursus.quiz.findIndex((quiz) =>
+        quiz._id.equals(idquiz)
+      );
+      ambilkursus.quiz[ambilquizindex].name = name;
+      ambilkursus.quiz[ambilquizindex].questions = questions;
+      await ambilkursus.save();
+      return res.status(200).send("sukses");
+    } else {
+      return res.status(403).send("gagal");
+    }
+  }
+});
+
+module.exports = router;
