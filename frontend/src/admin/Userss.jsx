@@ -12,7 +12,7 @@ import Navtas from "./NavAtas";
 import MyChart from "./Homee";
 import UserList from "./ListUser";
 import { useNavigate } from "react-router-dom";
-export default function Homeadmin() {
+export default function ListsUser() {
     const [openuser, setopenuser] = useState(false)
     const navigate = useNavigate();
     const navigateToUserList = () => {
@@ -27,7 +27,7 @@ export default function Homeadmin() {
                <Navtas />
                 <div style={{ width: "100%", flexGrow: "1", maxHeight: "max-content", background: "blueviolet", display: "flex", alignItems: "" }}>
                     <div style={{ width: "max-content", background: "#343a40" }}>
-                        <List sx={{ width: '100%', minWidth: 250 }} aria-label="contacts">
+                    <List sx={{ width: '100%', minWidth: 250 }} aria-label="contacts">
                             <ListItem disablePadding style={{ background: "#343a40" }} sx={{ margin: 0 }}>
                                 <ListItemButton onClick={navigateToHome}>
                                     <ListItemIcon>
@@ -64,7 +64,7 @@ export default function Homeadmin() {
                     </div>
                     <div style={{ width: "200px", background: "white", flexGrow: "1" }}>
                         <div>
-                            <MyChart/>
+                            <UserList/>
                         </div>
                     </div>
                 </div>

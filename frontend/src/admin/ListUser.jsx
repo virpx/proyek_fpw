@@ -7,8 +7,8 @@ const UserList = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5173/users'); // Sesuaikan dengan URL endpoint backend Anda
-        setUsers(response.data.user); // Sesuaikan dengan respon dari backend (response.data.users)
+        const response = await axios.get('http://localhost:3000/users'); // Sesuaikan dengan URL endpoint backend Anda
+        setUsers(response.data); // Sesuaikan dengan respon dari backend (response.data.users)
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -19,7 +19,7 @@ const UserList = () => {
 
   const deleteUser = async (id_user) => {
     try {
-      await axios.delete(`http://localhost:5173/users/${id_user}`); // Sesuaikan dengan URL endpoint untuk menghapus pengguna
+      await axios.delete(`http://localhost:3000/users/${id_user}`); // Sesuaikan dengan URL endpoint untuk menghapus pengguna
       setUsers(users.filter(user => user._id !== id_user));
       console.log('User deleted successfully');
     } catch (error) {
@@ -32,7 +32,7 @@ const UserList = () => {
       <h2>Daftar Pengguna</h2>
       <table>
         <thead>
-          <tr>
+          <tr style={{color:"black"}}>
             <th>Nama</th>
             <th>Role</th>
             <th>Aksi</th>
@@ -41,7 +41,7 @@ const UserList = () => {
         <tbody>
             {Array.isArray(users) && users.length > 0 ? (
                 users.map((user) => (
-                <tr key={user._id}>
+                <tr key={user._id} style={{color:"black"}}>
                     <td>{user.name}</td>
                     <td>{user.role === 0 ? 'Student' : 'Teacher'}</td>
                     <td>

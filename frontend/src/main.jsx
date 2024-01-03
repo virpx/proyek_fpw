@@ -33,6 +33,7 @@ import Addtask from "./Teacher/center/Addtask.jsx";
 import Addquiz from "./Teacher/center/Addquiz.jsx";
 import Viewtaskupload from "./Teacher/center/Viewtaskupload.jsx";
 import UserProfile from "./Student/userProfile.jsx";
+import ListsUser from "./admin/Userss.jsx";
 
 const host = "http://localhost:3000";
 
@@ -134,7 +135,16 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <Homeadmin></Homeadmin>,
+        children: [
+          {
+            index: true,
+            element: <Homeadmin></Homeadmin>,
+          },
+          {
+            path:"ListUser",
+            element:<ListsUser></ListsUser>
+          }
+        ]
       },
       {
         path: "teacher",
