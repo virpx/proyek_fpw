@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const axios = require("axios");
 const { ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -468,6 +469,112 @@ app.post("/submitanswer", async (req, res) => {
   );
 
   return res.status(200).json({ message: "berhasil" });
+});
+
+//TRANSACTION
+app.post("/create-payment", async (req, res) => {
+  let { id_user, id_kursus, gross_amount } = req.body;
+  try {
+    gross_amount = parseInt(gross_amount);
+    const order_id = helper.generateOrderId(id_user);
+    const midtransPromise = axios.post(
+      "https://app.sandbox.midtrans.com/snap/v1/transactions",
+      {
+        transaction_details: {
+          order_id,
+          gross_amount,
+        },
+        credit_card: {
+          secure: true,
+        },
+      },
+      {
+        auth: {
+          username: "SB-Mid-server-ZCktv1JIy74Z0J9kPErDHJ77",
+          password: "",
+        },
+      }
+    );
+
+    const newTransaction = new Transaction({
+      order_id: order_id,
+      user: id_user,
+      kursus: id_kursus,
+      paid_amount: gross_amount,
+      status: "pending",
+    });
+    newTransaction.save();
+
+    return res.status(200).json((await midtransPromise).data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//temp check payment
+app.post("/temppayment-notification-handler", async (req, res) => {
+  const url =
+    "https://api.sandbox.midtrans.com/v2" + `/${req.body.order_id}/status`;
+  const data = (
+    await axios.get(url, {
+      auth: {
+        username: "SB-Mid-server-ZCktv1JIy74Z0J9kPErDHJ77",
+        password: "",
+      },
+    })
+  ).data;
+
+  if (data.status_code == "404") {
+    return;
+  }
+
+  try {
+    const transaction = await Transaction.findOne({ order_id: data.order_id });
+
+    if (!transaction) {
+      console.log(`Transaction with order_id ${data.order_id} not found.`);
+      return;
+    }
+
+    transaction.status = data.transaction_status;
+
+    await transaction.save();
+
+    console.log(
+      `Transaction with order_id ${data.order_id} updated successfully.`
+    );
+  } catch (error) {
+    console.error("Error handling payment notification:", error);
+  }
+
+  res.status(200).json({ status: "success" });
+});
+
+// Endpoint to handle Midtrans payment notifications
+app.post("/payment-notification-handler", async (req, res) => {
+  const data = req.body;
+
+  try {
+    const transaction = await Transaction.findOne({ order_id: data.order_id });
+
+    if (!transaction) {
+      console.log(`Transaction with order_id ${data.order_id} not found.`);
+      return;
+    }
+
+    transaction.status = data.transaction_status;
+
+    await transaction.save();
+
+    console.log(
+      `Transaction with order_id ${data.order_id} updated successfully.`
+    );
+  } catch (error) {
+    console.error("Error handling payment notification:", error);
+  }
+
+  res.status(200).json({ status: "success" });
 });
 
 app.listen(port, async () => {

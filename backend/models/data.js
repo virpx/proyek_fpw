@@ -121,23 +121,34 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const transactionSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const transactionSchema = new mongoose.Schema(
+  {
+    order_id: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    kursus: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Kursus",
+      required: true,
+    },
+    paid_amount: Number,
+    status: String,
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  kursus: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Kursus",
-    required: true,
-  },
-  status: String,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    versionKey: false,
+  }
+);
 
 const tugasSchema = new mongoose.Schema(
   {
