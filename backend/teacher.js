@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const { User, Kursus, Tugas, Forum } = require("./models/data");
 const multer = require("multer");
 const secret = "rahasia";
+const uploadAssignment = require("./controller/uploadAssignment");
 const fs = require("fs");
 router.get("/ceklogin", async (req, res) => {
   const token = req.headers["x-auth-token"];
@@ -358,7 +359,17 @@ const storagemateri = multer.diskStorage({
     cb(null, sekarang + ".pdf");
   },
 });
-const uploadmateri = multer({ storage: storagemateri });
+const tempstorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "../frontend/public/materi_pdf/");
+  },
+  filename: function (req, file, cb) {
+    var sekarang = String(Date.now());
+    filenameupload = sekarang + ".pdf";
+    cb(null, sekarang + ".pdf");
+  },
+});
+const uploadmateri = multer({ storage: tempstorage });
 router.post("/addmateri", uploadmateri.single("filepdf"), async (req, res) => {
   const token = req.headers["x-auth-token"];
   if (token == null || token == "") {
@@ -375,7 +386,7 @@ router.post("/addmateri", uploadmateri.single("filepdf"), async (req, res) => {
     });
     if (ambilkursus.owner == tokendata._id.toString()) {
       const databaru = {
-        path: "materi_pdf/" + filenameupload,
+        path: "/materi_pdf/" + filenameupload,
         name: nama,
       };
       await Kursus.updateOne(
@@ -461,13 +472,16 @@ router.post(
         const ambilmateriIndex = ambilkursus.materi.findIndex((materi) =>
           materi._id.equals(idmateri)
         );
-        fs.unlink("./" + ambilkursus.materi[ambilmateriIndex].path, (err) => {
-          if (err) {
-            throw err;
+        fs.unlink(
+          "../frontend/public/" + ambilkursus.materi[ambilmateriIndex].path,
+          (err) => {
+            if (err) {
+              throw err;
+            }
           }
-        });
+        );
         ambilkursus.materi[ambilmateriIndex].path =
-          "materi_pdf/" + filenameupload;
+          "/materi_pdf/" + filenameupload;
         ambilkursus.materi[ambilmateriIndex].name = nama;
         ambilkursus.save();
         return res.status(200).send("sukses");
@@ -999,5 +1013,8 @@ router.post("/editquiz", async (req, res) => {
     }
   }
 });
+
+//getpdf
+router.get("/viewassignment/:path/:email/:file", uploadAssignment.getPdf);
 
 module.exports = router;

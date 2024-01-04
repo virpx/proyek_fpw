@@ -13,10 +13,12 @@ import Stack from "@mui/material/Stack";
 import TeacherNavbar from "./TeacherNavbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Buffer } from "buffer";
 const chartsParams = {
   margin: { bottom: 20, left: 25, right: 5 },
   height: 300,
 };
+const host = "http://localhost:3000";
 export default function Indexteacher() {
   const [color, setColor] = useState("#4e79a7");
   const [kategoripilih, setkategoripilih] = useState("All");
@@ -60,11 +62,37 @@ export default function Indexteacher() {
       setkursusshow(datae);
     }
   }
+
+  const [imageSrc, setImageSrc] = useState("");
+  const fetchImage = async () => {
+    try {
+      const response = await axios.get(
+        `${host}/getppteacher?id_user=` +
+          JSON.parse(localStorage.getItem("user"))._id,
+        {
+          responseType: "arraybuffer",
+        }
+      );
+
+      // Convert the ArrayBuffer to a base64 string
+      const imageBase64 = Buffer.from(response.data, "binary").toString(
+        "base64"
+      );
+
+      const imageSrc = `data:image/jpeg;base64,${imageBase64}`;
+      setImageSrc(imageSrc);
+    } catch (error) {
+      console.error("Error fetching image:", error.message);
+    }
+  };
+
   useEffect(() => {
     document.getElementById("containerutama").style.maxHeight =
       document.getElementById("containerutama").offsetHeight + "px";
     loaddata();
+    fetchImage();
   }, []);
+
   return (
     <>
       <div
@@ -269,7 +297,7 @@ export default function Indexteacher() {
                       }}
                     >
                       <img
-                        src="https://pbs.twimg.com/media/EGSq_kjWoAcvntn.jpg"
+                        src={imageSrc}
                         width={100}
                         height={100}
                         style={{
@@ -277,6 +305,10 @@ export default function Indexteacher() {
                           borderRadius: "12px",
                           marginTop: "80px",
                           marginLeft: "20px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          navigate("/profile");
                         }}
                       ></img>
                     </div>

@@ -169,7 +169,7 @@ app.get("/listKursus", async (req, res) => {
       },
     },
   ]);
-
+  console.log(kursus);
   var listkursus = [];
 
   kursus[0].listkursus.map((k, index) => {

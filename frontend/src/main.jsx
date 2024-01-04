@@ -68,14 +68,14 @@ const router = createBrowserRouter([
               },
             });
             return {
-              kursus: result.data.kursus,
+              kursus: result.data,
               listkursus: result2.data.listkursus,
             };
           } else {
             const result = await axios.get(`${host}/kursus`);
             const result2 = await axios.get(`${host}/kursus`);
             return {
-              kursus: result.data.kursus,
+              kursus: result.data,
               listkursus: result2.data.kursus,
             };
           }
@@ -141,10 +141,10 @@ const router = createBrowserRouter([
             element: <Homeadmin></Homeadmin>,
           },
           {
-            path:"ListUser",
-            element:<ListsUser></ListsUser>
-          }
-        ]
+            path: "ListUser",
+            element: <ListsUser></ListsUser>,
+          },
+        ],
       },
       {
         path: "teacher",

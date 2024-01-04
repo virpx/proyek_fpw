@@ -11,6 +11,7 @@ const Courses = () => {
   const [sortBy, setSortBy] = useState("");
   const [courses, setCourses] = useState(data.kursus);
   const [myCourses, setMyCourses] = useState(data.listkursus);
+  console.log(data);
   const filteredAndSortedCourses = courses
     .filter((course) =>
       course.nama_kursus.toLowerCase().includes(searchInput.toLowerCase())
@@ -78,7 +79,9 @@ const Courses = () => {
               <p>{course.kategori}</p>
             </div>
 
-            {myCourses.length === 0 ? (
+            {myCourses === undefined ? (
+              <></>
+            ) : myCourses.length === 0 ? (
               <button
                 className="buy-button"
                 onClick={() => {

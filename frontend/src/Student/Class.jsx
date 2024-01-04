@@ -219,6 +219,7 @@ const Class = () => {
     alert("Successfully Posted an Answer");
     getForumInfo();
   };
+  console.log(materiObjects);
   return (
     <>
       <Navbar />

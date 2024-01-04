@@ -64,7 +64,9 @@ const getPPTeacher = async (req, res) => {
   const user = await User.findOne({ _id: new ObjectId(id_user) });
 
   if (user.profile_path == null) {
-    return res.status(200).json({ message: "tidak ada" });
+    const lokasinya = "profiles/dummy.jpeg";
+
+    return res.status(200).sendFile(lokasinya, { root: "." });
   }
   const lokasinya = user.profile_path;
 

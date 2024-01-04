@@ -113,7 +113,7 @@ const singleFile = (req, res) => {
       tugas_id: tugasId,
       user_id: id_user,
       path: `assignments/${email}/${fileName}`,
-      score: 0,
+      score: -1,
     });
 
     const body = req.body;
@@ -122,8 +122,8 @@ const singleFile = (req, res) => {
 };
 
 const getPdf = (req, res) => {
-  const email = req.query.email;
-  const lokasinya = `assignments/${email}/65759c821885fd85f8fc116f.pdf`;
+  let { path, email, file } = req.params;
+  const lokasinya = `${path}/${email}/${file}`;
   return res.status(200).sendFile(lokasinya, { root: "." });
 };
 

@@ -306,17 +306,17 @@ export default function Coursecenter() {
                             >
                               Remove
                             </a>
-                            <a
-                              style={{ cursor: "pointer", marginLeft: "5px" }}
-                              className="link-success link-opacity-100"
-                              onClick={() => {
-                                navigate("task/" + data._id.toString());
-                              }}
-                            >
-                              View Assignment
-                            </a>
                           </>
                         )}
+                        <a
+                          style={{ cursor: "pointer", marginLeft: "5px" }}
+                          className="link-success link-opacity-100"
+                          onClick={() => {
+                            navigate("task/" + data._id.toString());
+                          }}
+                        >
+                          View Assignment
+                        </a>
                       </td>
                     </tr>
                   );

@@ -13,6 +13,7 @@ import axios from "axios";
 import authHeader from "../services/auth-header";
 import { Buffer } from "buffer";
 import Footer from "../Index/Footer";
+import TeacherNavbar from "../Teacher/TeacherNavbar";
 
 const host = "http://localhost:3000";
 
@@ -107,7 +108,7 @@ const UserProfile = () => {
     <div>
       {currentUser && (
         <div>
-          <Navbar />
+          {currentUser.role === 0 ? <Navbar /> : <TeacherNavbar />}
           <Paper
             elevation={3}
             style={{ maxWidth: "400px", margin: "20px auto", padding: "20px" }}
