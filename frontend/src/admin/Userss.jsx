@@ -1,11 +1,8 @@
-import { AppBar, Collapse, Container, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
+import { List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import StyleIcon from '@mui/icons-material/Style';
 import PersonIcon from '@mui/icons-material/Person';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import RemoveIcon from '@mui/icons-material/Remove';
 import "../css/navbar.css";
 import { useState } from "react";
 import Navtas from "./NavAtas";
@@ -41,7 +38,7 @@ export default function ListsUser() {
                                     <ListItemIcon>
                                         <StyleIcon style={{ color: 'white' }} ></StyleIcon>
                                     </ListItemIcon>
-                                    <ListItemText primary="Kursus" />
+                                    <ListItemText primary="Transaction" />
                                 </ListItemButton>
                             </ListItem>
                             <ListItem disablePadding style={{ background: "#343a40" }} sx={{ margin: 0 }}>

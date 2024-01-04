@@ -41,7 +41,7 @@ export default function Homeadmin() {
                                     <ListItemIcon>
                                         <StyleIcon style={{ color: 'white' }} ></StyleIcon>
                                     </ListItemIcon>
-                                    <ListItemText primary="Kursus" />
+                                    <ListItemText primary="Transaction" />
                                 </ListItemButton>
                             </ListItem>
                             <ListItem disablePadding style={{ background: "#343a40" }} sx={{ margin: 0 }}>

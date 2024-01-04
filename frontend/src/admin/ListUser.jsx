@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import "./tabel.css"
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -32,7 +33,7 @@ const UserList = () => {
       <h2>Daftar Pengguna</h2>
       <table>
         <thead>
-          <tr style={{color:"black"}}>
+          <tr >
             <th>Nama</th>
             <th>Role</th>
             <th>Aksi</th>
@@ -41,7 +42,7 @@ const UserList = () => {
         <tbody>
             {Array.isArray(users) && users.length > 0 ? (
                 users.map((user) => (
-                <tr key={user._id} style={{color:"black"}}>
+                <tr key={user._id} >
                     <td>{user.name}</td>
                     <td>{user.role === 0 ? 'Student' : 'Teacher'}</td>
                     <td>
