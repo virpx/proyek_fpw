@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const { User, Kursus, Tugas, Forum } = require("./models/data");
+const { User, Kursus, Tugas, Forum, Transaction } = require("./models/data");
 const multer = require("multer");
 const secret = "rahasia";
 const uploadAssignment = require("./controller/uploadAssignment");
 const fs = require("fs");
+const { log } = require("util");
 router.get("/ceklogin", async (req, res) => {
   const token = req.headers["x-auth-token"];
   if (token == null || token == "") {
@@ -59,19 +60,24 @@ router.get("/teacherdata", async (req, res) => {
       }
       var penjualantahunini = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       const user = await User.find();
-      for (const iterator of datakursus) {
-        for (const iterator2 of user) {
-          const indexuser = iterator2.listkursus.findIndex((listkursus) =>
-            listkursus.kursus.equals(iterator._id.toString())
-          );
-          if (indexuser != -1) {
-            var bulanpenjualan = new Date(
-              iterator2.listkursus[indexuser].createdAt
-            );
-            penjualantahunini[bulanpenjualan.getMonth()] += 1;
+
+      const promises = datakursus.map(async (k) => {
+        const currentYear = new Date().getFullYear();
+        const getTrans = await Transaction.find({ kursus: k._id });
+
+        getTrans.forEach((transaction) => {
+          const transactionYear = new Date(transaction.createdAt).getFullYear();
+          const transactionMonth = new Date(transaction.createdAt).getMonth();
+
+          if (transactionYear === currentYear) {
+            const monthIndex = transactionMonth;
+
+            penjualantahunini[monthIndex] += 1;
           }
-        }
-      }
+        });
+      });
+
+      await Promise.all(promises);
       var dataout = {};
       dataout.userdata = {
         nama: datauser.name,
@@ -761,20 +767,85 @@ router.get("/reportdata", async (req, res) => {
           var bulanpenjualan = new Date(
             iterator2.listkursus[indexuser].createdAt
           );
-          penjualantahunini[bulanpenjualan.getMonth()].jumlah += 1;
-          pendapatantahunini[bulanpenjualan.getMonth()] += iterator.harga;
           tmpjumlahstudent++;
         }
       }
       jumlahstudent += tmpjumlahstudent;
-      jumlahearning += tmpjumlahstudent * iterator.harga;
     }
+
+    const promises = kursusguru.map(async (k) => {
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().toLocaleString("en-US", {
+        month: "short",
+      });
+      const getTrans = await Transaction.find({ kursus: k._id });
+
+      getTrans.forEach((transaction) => {
+        const transactionYear = new Date(transaction.createdAt).getFullYear();
+        const transactionMonth = new Date(transaction.createdAt).toLocaleString(
+          "en-US",
+          { month: "short" }
+        );
+
+        if (transactionYear === currentYear) {
+          const monthIndex = penjualantahunini.findIndex(
+            (item) => item.month === transactionMonth
+          );
+          if (monthIndex !== -1) {
+            penjualantahunini[monthIndex].jumlah += 1;
+            pendapatantahunini[monthIndex] += transaction.paid_amount;
+            if (currentMonth == transactionMonth) {
+              jumlahearning += transaction.paid_amount;
+            }
+          }
+        }
+      });
+    });
+    await Promise.all(promises);
+
+    const listTransaksi = [];
+    const TransDesc = await Transaction.find().sort({ _id: -1 });
+
+    const promises2 = TransDesc.map(async (transaction) => {
+      try {
+        var coursePromise = Kursus.findOne({ _id: transaction.kursus });
+        var studentPromise = User.findOne({ _id: transaction.user });
+
+        var [course, student] = await Promise.all([
+          coursePromise,
+          studentPromise,
+        ]);
+
+        const dateObject = new Date(transaction.createdAt);
+
+        const formattedDate = dateObject.toISOString().split("T")[0];
+
+        if (course && student) {
+          let newList = {
+            student_name: student.name,
+            course_name: course.nama_kursus,
+            date: formattedDate,
+            paid_amount: transaction.paid_amount,
+            payment_status: transaction.status,
+          };
+          listTransaksi.push(newList);
+        } else {
+          console.log("Course or student not found");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    });
+
+    await Promise.all(promises2);
+
     var dataout = {
       jumlahkursus: kursusguru.length,
       jumlahearning: jumlahearning,
       jumlahstudent: jumlahstudent,
       penjualantahunini: penjualantahunini,
       pendapatantahunini: pendapatantahunini,
+      listTransaksi: listTransaksi,
     };
     return res.status(200).json(dataout);
   }

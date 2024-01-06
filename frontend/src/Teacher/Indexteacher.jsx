@@ -653,7 +653,7 @@ export default function Indexteacher() {
                       className="text-center color-black text-dark"
                       style={{ fontSize: "20px", marginTop: "30px" }}
                     >
-                      <b>Grafik Penjualan Bulan Ini</b>
+                      <b>This Year's Sales Chart</b>
                     </p>
                     <Stack
                       direction="column"
