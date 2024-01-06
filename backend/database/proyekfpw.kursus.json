@@ -4,18 +4,18 @@
   },
   "nama_kursus": "Matematika Dasar",
   "kategori": "DIY dan Kerajinan Tangan",
-  "harga": 100,
+  "harga": 100000,
   "active": 1,
   "materi": [
     {
-      "path": "materi_pdf/1704354696943.pdf",
+      "path": "/materi_pdf/1704355014295.pdf",
       "name": "SISTEM BILANGAN REAL",
       "_id": {
         "$oid": "659663883e70f6b848696cfc"
       }
     },
     {
-      "path": "materi_pdf/1704354703315.pdf",
+      "path": "/materi_pdf/1704354703315.pdf",
       "name": "HIMPUNAN",
       "_id": {
         "$oid": "6596638f3e70f6b848696d33"

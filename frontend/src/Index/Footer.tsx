@@ -65,9 +65,9 @@ const Footer = () => {
           </div>
           <div className="footer-section">
             <h3>Contact Us</h3>
-            <p>
+            <a href="mailto:info@innospeherelearn.com">
               <EmailIcon /> info@innospeherelearn.com
-            </p>
+            </a>
             <p>
               <LocalPhoneIcon /> +62-815-554-646
             </p>

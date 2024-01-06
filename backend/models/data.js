@@ -70,7 +70,10 @@ const kursusSchema = new mongoose.Schema(
     owner: mongoose.Schema.ObjectId,
     deskripsi: String,
     thumb_path: String,
-    active: Number,
+    active: {
+      type: Number,
+      default: 0,
+    },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -97,6 +100,7 @@ const userSchema = new mongoose.Schema(
     updatedAt: Date,
     listkursus: [
       {
+        _id: false,
         kursus: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Kursus",
@@ -110,6 +114,10 @@ const userSchema = new mongoose.Schema(
           },
         ],
         createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+        updatedAt: {
           type: Date,
           default: Date.now,
         },

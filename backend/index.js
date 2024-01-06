@@ -131,7 +131,7 @@ app.get("/users", async (req, res) => {
 
 //get all kursus
 app.get("/kursus", async (req, res) => {
-  const kursus = await Kursus.find();
+  const kursus = await Kursus.find({ active: 1 });
   return res.status(200).json(kursus);
 });
 
@@ -473,7 +473,25 @@ app.post("/submitanswer", async (req, res) => {
 
 //TRANSACTION
 app.post("/create-payment", async (req, res) => {
-  let { id_user, id_kursus, gross_amount } = req.body;
+  let { id_kursus, gross_amount } = req.body;
+
+  let user, id_user;
+  const token = req.headers["x-auth-token"] || "";
+  if (token) {
+    try {
+      data = jwt.verify(token, secret);
+      user = await User.find({ _id: data._id });
+      if (user) {
+        flag = true;
+        id_user = data._id;
+      }
+    } catch (err) {
+      return res.status(400).json({
+        err,
+      });
+    }
+  }
+
   try {
     gross_amount = parseInt(gross_amount);
     const order_id = helper.generateOrderId(id_user);
@@ -496,14 +514,29 @@ app.post("/create-payment", async (req, res) => {
       }
     );
 
-    const newTransaction = new Transaction({
-      order_id: order_id,
+    const cekada = await Transaction.findOne({
       user: id_user,
       kursus: id_kursus,
-      paid_amount: gross_amount,
-      status: "pending",
     });
-    newTransaction.save();
+    if (cekada.status == "pending") {
+      const updateid = await Transaction.updateOne(
+        {
+          user: id_user,
+          kursus: id_kursus,
+        },
+        { $set: { order_id: order_id } }
+      );
+    }
+    if (cekada == null) {
+      const newTransaction = new Transaction({
+        order_id: order_id,
+        user: id_user,
+        kursus: id_kursus,
+        paid_amount: gross_amount,
+        status: "pending",
+      });
+      newTransaction.save();
+    }
 
     return res.status(200).json((await midtransPromise).data);
   } catch (error) {
@@ -544,6 +577,33 @@ app.post("/temppayment-notification-handler", async (req, res) => {
     console.log(
       `Transaction with order_id ${data.order_id} updated successfully.`
     );
+
+    if (
+      data.transaction_status === "capture" ||
+      data.transaction_status === "settlement"
+    ) {
+      const newKursus = {
+        kursus: transaction.kursus,
+        last_progress: 1,
+        current_index: 1,
+        nilai_quiz: [],
+      };
+      const finduser = await User.findOne({ _id: transaction.user });
+      var sudahenroll = false;
+
+      finduser.listkursus.map((lk) => {
+        if (lk.kursus == newKursus.kursus) {
+          sudahenroll = true;
+        }
+      });
+
+      if (!sudahenroll) {
+        const pushKursus = await User.updateOne(
+          { _id: transaction.user },
+          { $push: { listkursus: newKursus } }
+        );
+      }
+    }
   } catch (error) {
     console.error("Error handling payment notification:", error);
   }

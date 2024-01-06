@@ -80,7 +80,14 @@ const Courses = () => {
             </div>
 
             {myCourses === undefined ? (
-              <></>
+              <button
+                className="buy-button"
+                onClick={() => {
+                  navigate("/course/detail/" + course._id);
+                }}
+              >
+                Buy
+              </button>
             ) : myCourses.length === 0 ? (
               <button
                 className="buy-button"

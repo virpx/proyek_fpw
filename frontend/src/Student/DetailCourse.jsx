@@ -11,6 +11,14 @@ const host = "http://localhost:3000";
 const DetailCourse = () => {
   const navigate = useNavigate();
   const data = useLoaderData();
+
+  const auth = () => {
+    var header = authHeader();
+    if (header == null) {
+      navigate("/login");
+    }
+  };
+
   const [course, setCourse] = useState(data.kursus[0]);
   const [teacher, setTeacher] = useState(data.teacher[0]);
   const [imageSrc, setImageSrc] = useState("");
@@ -31,17 +39,24 @@ const DetailCourse = () => {
       console.error("Error fetching image:", error.message);
     }
   };
-  const auth = () => {
-    var header = authHeader();
-    if (header == null) {
-      navigate("/login");
-    }
-  };
 
   useEffect(() => {
-    auth();
     fetchImage();
   }, []);
+  const hrefemail = "mailto:" + teacher.email;
+
+  const handleenroll = async () => {
+    const result = await axios.post(
+      `${host}/create-payment`,
+      { id_kursus: course._id, gross_amount: course.harga },
+      {
+        headers: {
+          "x-auth-token": authHeader()["x-access-token"],
+        },
+      }
+    );
+    window.open(result.data.redirect_url, "_blank", "rel=noopener noreferrer");
+  };
 
   return (
     <>
@@ -86,11 +101,22 @@ const DetailCourse = () => {
           <h2 id="course-overview-content">Enrollment Information</h2>
           <p id="course-overview-content">
             Ready to join?&nbsp;
-            <span id="enrollment-link">Enroll now</span>
+            <span
+              id="enrollment-link"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                auth();
+                if (!auth()) {
+                  handleenroll();
+                }
+              }}
+            >
+              Enroll now
+            </span>
           </p>
           <p id="course-overview-content">
             Have questions? Contact us at&nbsp;
-            <a href="mailto:info@example.com" id="enrollment-link">
+            <a href={hrefemail} id="enrollment-link">
               {teacher.email}
             </a>
           </p>

@@ -85,11 +85,7 @@ const router = createBrowserRouter([
         path: "/course/detail/:id",
         element: <DetailCourse />,
         loader: async ({ params }) => {
-          const result = await axios.get(`${host}/kursus/${params.id}`, {
-            headers: {
-              "x-auth-token": authHeader()["x-access-token"],
-            },
-          });
+          const result = await axios.get(`${host}/kursus/${params.id}`);
           return { kursus: result.data.kursus, teacher: result.data.teacher };
         },
       },

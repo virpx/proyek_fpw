@@ -17,7 +17,7 @@
         "$oid": "6590ecc8f477c9d8076920fb"
       },
       "last_progress": 2,
-      "current_index": 1,
+      "current_index": 2,
       "nilai_quiz": [
         {
           "name": "Sample Quiz",
@@ -65,5 +65,20 @@
   "updatedAt": {
     "$date": "2024-01-01T10:42:57.790Z"
   },
-  "listkursus": []
+  "listkursus": [
+    {
+      "kursus": {
+        "$oid": "6590ecc8f477c9d8076920fb"
+      },
+      "last_progress": 1,
+      "current_index": 1,
+      "nilai_quiz": [],
+      "createdAt": {
+        "$date": "2024-01-06T06:19:42.582Z"
+      },
+      "updatedAt": {
+        "$date": "2024-01-06T06:19:42.582Z"
+      }
+    }
+  ]
 }]

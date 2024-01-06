@@ -7,9 +7,11 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Scrollbar, Autoplay } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
+import authHeader from "../services/auth-header";
 
 export default function Carousel() {
   const navigate = useNavigate();
+  var header = authHeader();
   return (
     <div id="Carousel">
       <Swiper
@@ -35,14 +37,16 @@ export default function Carousel() {
               Explore a variety of courses and enhance your knowledge with our
               interactive website.
             </p>
-            <button
-              className="join-button"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Join Now
-            </button>
+            {header == null && (
+              <button
+                className="join-button"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Join Now
+              </button>
+            )}
           </div>
           <img
             src="https://www.qs.com/wp-content/uploads/2015/05/students-or-teenagers-with-laptop-and-tablet-computers.jpg"
@@ -57,14 +61,16 @@ export default function Carousel() {
               Discover more about different subjects and broaden your skills
               through our engaging website.
             </p>
-            <button
-              className="join-button"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Join Now
-            </button>
+            {header == null && (
+              <button
+                className="join-button"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Join Now
+              </button>
+            )}
           </div>
           <img
             src="https://www.hamline.edu/sites/default/files/styles/scale_width_1920/public/2023-07/commencement2018-127.20230712170626003.jpg?h=c7db29bb&itok=cMVL2AvZ"
@@ -79,14 +85,16 @@ export default function Carousel() {
               Click the button to start your educational adventure with a
               variety of courses.
             </p>
-            <button
-              className="join-button"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Join Now
-            </button>
+            {header == null && (
+              <button
+                className="join-button"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Join Now
+              </button>
+            )}
           </div>
           <img
             src="https://storage.googleapis.com/wp-static/wp-ucp/2022/08/UCP-Video-Cover-Homepage.jpg"
@@ -101,14 +109,16 @@ export default function Carousel() {
               Witness the beauty of learning with our diverse courses in every
               slide.
             </p>
-            <button
-              className="join-button"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Join Now
-            </button>
+            {header == null && (
+              <button
+                className="join-button"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Join Now
+              </button>
+            )}
           </div>
           <img
             src="https://www.hamline.edu/sites/default/files/styles/scale_width_1920/public/2023-07/fall_shoot_2021-491.jpg?h=5d170c9e&itok=e0W0Xc43"

@@ -49,3 +49,6 @@ footer {
   margin: 0;
   font-size: 14px;
 }
+a:link {
+  text-decoration: none;
+}
