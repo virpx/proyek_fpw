@@ -18,6 +18,9 @@ export default function ListsUser() {
       const navigateToHome = () => {
         navigate('/admin');
       };
+      const navigateToTranss = () => {
+        navigate('ListTrans');
+      };
     return (
         <>
             <div style={{ width: "100%", height: "100vh", background: "white", display: "flex", flexDirection: "column" }}>
@@ -34,7 +37,7 @@ export default function ListsUser() {
                                 </ListItemButton>
                             </ListItem>
                             <ListItem disablePadding style={{ background: "#343a40" }} sx={{ margin: 0 }}>
-                                <ListItemButton>
+                                <ListItemButton onClick={navigateToTranss}>
                                     <ListItemIcon>
                                         <StyleIcon style={{ color: 'white' }} ></StyleIcon>
                                     </ListItemIcon>

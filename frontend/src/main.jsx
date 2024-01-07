@@ -34,6 +34,7 @@ import Addquiz from "./Teacher/center/Addquiz.jsx";
 import Viewtaskupload from "./Teacher/center/Viewtaskupload.jsx";
 import UserProfile from "./Student/userProfile.jsx";
 import ListsUser from "./admin/Userss.jsx";
+import Transs from "./admin/Transs.jsx";
 
 const host = "http://localhost:3000";
 
@@ -139,6 +140,10 @@ const router = createBrowserRouter([
           {
             path: "ListUser",
             element: <ListsUser></ListsUser>,
+          },
+          {
+            path: "ListTrans",
+            element: <Transs></Transs>
           },
         ],
       },

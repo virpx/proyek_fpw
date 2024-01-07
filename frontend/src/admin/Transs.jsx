@@ -9,10 +9,9 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import "../css/navbar.css";
 import { useState } from "react";
 import Navtas from "./NavAtas";
-import MyChart from "./Homee";
-import UserList from "./ListUser";
 import { useNavigate } from "react-router-dom";
-export default function Homeadmin() {
+import TransactionList from "./alltrans";
+export default function Transs() {
     const [openuser, setopenuser] = useState(false)
     const navigate = useNavigate();
     const navigateToUserList = () => {
@@ -67,7 +66,7 @@ export default function Homeadmin() {
                     </div>
                     <div style={{ width: "200px", background: "white", flexGrow: "1" }}>
                         <div>
-                            <MyChart/>
+                            <TransactionList/>
                         </div>
                     </div>
                 </div>

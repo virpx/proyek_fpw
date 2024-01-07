@@ -31,21 +31,21 @@ const UserList = () => {
   return (
     <div>
       <h2>Daftar Pengguna</h2>
-      <table>
+      <table className='tbb'>
         <thead>
-          <tr >
-            <th>Nama</th>
-            <th>Role</th>
-            <th>Aksi</th>
+          <tr className='trr'>
+            <th className='thh'>Nama</th>
+            <th className='thh'>Role</th>
+            <th className='thh'>Aksi</th>
           </tr>
         </thead>
         <tbody>
             {Array.isArray(users) && users.length > 0 ? (
                 users.map((user) => (
-                <tr key={user._id} >
-                    <td>{user.name}</td>
-                    <td>{user.role === 0 ? 'Student' : 'Teacher'}</td>
-                    <td>
+                <tr key={user._id} className='trr' >
+                    <td className='tdd'>{user.name}</td>
+                    <td className='tdd'>{user.role === 0 ? 'Student' : 'Teacher'}</td>
+                    <td> className='tdd'
                     <button onClick={() => deleteUser(user._id)}>Hapus</button>
                     </td>
                 </tr>

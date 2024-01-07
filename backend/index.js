@@ -129,6 +129,12 @@ app.get("/users", async (req, res) => {
   return res.status(200).json(users);
 });
 
+//get all Transaction
+app.get("/transactions", async (req, res) => {
+  const transactions = await Transaction.find();
+  return res.status(200).json(transactions);
+});
+
 //get all kursus
 app.get("/kursus", async (req, res) => {
   const kursus = await Kursus.find({ active: 1 });
