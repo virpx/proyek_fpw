@@ -202,6 +202,7 @@ const Class = () => {
   };
 
   const [textValue, setTextValue] = useState("");
+  const [textValue2, setTextValue2] = useState("");
 
   const handleComment = async () => {
     const updateData = await axios.post(
@@ -218,8 +219,26 @@ const Class = () => {
     );
     alert("Successfully Posted an Answer");
     getForumInfo();
+    setTextValue("");
   };
-  console.log(materiObjects);
+  const handlequestion = async () => {
+    const updateData = await axios.post(
+      `${host}/askquestion`,
+      {
+        id_kursus: course._id,
+        question: textValue2,
+      },
+      {
+        headers: {
+          "x-auth-token": authHeader()["x-access-token"],
+        },
+      }
+    );
+    alert("Successfully Posted a Question");
+    getForumInfo();
+    setTextValue2("");
+  };
+
   return (
     <>
       <Navbar />
@@ -532,7 +551,7 @@ const Class = () => {
                       return (
                         <tr>
                           <td>{e.name}</td>
-                          {!completedAssignmentItem && <td>0</td>}
+                          {!completedAssignmentItem && <td>-</td>}
                           {completedAssignmentItem && (
                             <td>{completedAssignmentItem.score}</td>
                           )}
@@ -563,7 +582,7 @@ const Class = () => {
                               <td>
                                 {matchingNilaiQuiz
                                   ? matchingNilaiQuiz.score
-                                  : 0}
+                                  : "-"}
                               </td>
                             </tr>
                           );
@@ -581,6 +600,17 @@ const Class = () => {
             <div id="content">
               {Forum == null && (
                 <div>
+                  <textarea
+                    value={textValue2}
+                    onChange={(e) => setTextValue2(e.target.value)}
+                    rows={4}
+                    cols={50}
+                    placeholder="Enter Question here..."
+                    style={{ resize: "none", width: "100%", height: "15 0px" }}
+                  />
+                  <button id="submit-btn" onClick={handlequestion}>
+                    Post a Question
+                  </button>
                   <h2>{forumList.length} questions</h2>
                   <table class="table table-striped">
                     <tbody>
@@ -621,7 +651,12 @@ const Class = () => {
                                     width: "110px",
                                   }}
                                 >
-                                  {f.lanswer.length} answers &nbsp;
+                                  {f.lanswer[0].user.email == undefined ? (
+                                    <>0</>
+                                  ) : (
+                                    f.lanswer.length
+                                  )}
+                                  &nbsp;answers &nbsp;
                                 </p>
                               )}
                             </td>
@@ -654,7 +689,12 @@ const Class = () => {
                   </h2>
 
                   <h3 style={{ marginLeft: "10px" }}>
-                    {forumList[Forum].lanswer.length} Answers
+                    {forumList[Forum].lanswer[0].user.email == undefined ? (
+                      <>0</>
+                    ) : (
+                      forumList[Forum].lanswer.length
+                    )}
+                    &nbsp;Answers &nbsp;
                   </h3>
                   <hr style={{ border: "3px solid #17D577" }}></hr>
                   {forumList[Forum].lanswer.map((a, index) => {

@@ -12,43 +12,61 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleData = async (data) => {
-    try {
-      const result = await axios
-        .post(`${host}/login`, {
-          email: data.email,
-          password: data.password,
-        })
-        .then((response) => {
-          if (response.data.token) {
-            localStorage.setItem("user", JSON.stringify(response.data));
-            localStorage.setItem("storedTime", Date.now().toString());
-          }
-
-          return response.data;
-        });
-      alert(result.message);
-
-      if (
-        result.message == "You have successfully logged in to your account."
-      ) {
-        try {
-          const result = await axios.get(`${host}/activeUser`, {
-            headers: {
-              "x-auth-token": authHeader()["x-access-token"],
-            },
-          });
-
-          if (result.data.user[0].role == 0) {
-            navigate("/mycourses/" + result.data.user[0]._id);
-          } else if (result.data.user[0].role == 1) {
-            navigate("/teacher");
-          }
-        } catch (error) {
-          console.log(error);
-        }
+    if (data.email == "admin@innospeherelearn.com") {
+      if (data.password == "proyekfpw") {
+        navigate("/admin");
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            email: data.email,
+            token:
+              "$2a$12$1CjlWcncg0dY58qcmwLqD.pKkz7oalJM97AbY6nDB.PWsXgGOewTG",
+            _id: "ADMIN",
+            message: "You have successfully logged in to your account.",
+          })
+        );
+      } else {
+        alert("You Are Not an Admin!");
       }
-    } catch (error) {
-      alert(error.response.data.message);
+    } else {
+      try {
+        const result = await axios
+          .post(`${host}/login`, {
+            email: data.email,
+            password: data.password,
+          })
+          .then((response) => {
+            if (response.data.token) {
+              localStorage.setItem("user", JSON.stringify(response.data));
+              localStorage.setItem("storedTime", Date.now().toString());
+            }
+
+            return response.data;
+          });
+        alert(result.message);
+
+        if (
+          result.message == "You have successfully logged in to your account."
+        ) {
+          try {
+            const result = await axios.get(`${host}/activeUser`, {
+              headers: {
+                "x-auth-token": authHeader()["x-access-token"],
+              },
+            });
+
+            if (result.data.user[0].role == 0) {
+              navigate("/mycourses/" + result.data.user[0]._id);
+            } else if (result.data.user[0].role == 1) {
+              navigate("/teacher");
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      } catch (error) {
+        alert(error.response.data.message);
+      }
     }
   };
 

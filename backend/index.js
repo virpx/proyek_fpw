@@ -397,7 +397,7 @@ app.get("/listforum", async (req, res) => {
       $match: { kursus_id: new ObjectId(kursus_id) },
     },
     {
-      $unwind: "$lanswer",
+      $unwind: { path: "$lanswer", preserveNullAndEmptyArrays: true },
     },
     {
       $lookup: {
@@ -408,7 +408,31 @@ app.get("/listforum", async (req, res) => {
       },
     },
     {
-      $unwind: "$user",
+      $unwind: { path: "$user", preserveNullAndEmptyArrays: true },
+    },
+    {
+      $group: {
+        _id: "$_id",
+        kursus_id: { $first: "$kursus_id" },
+        question: { $first: "$question" },
+        lanswer: {
+          $push: {
+            $cond: {
+              if: { $ne: ["$user", []] },
+              then: {
+                iduser: "$lanswer.iduser",
+                answer: "$lanswer.answer",
+                ishighlight: "$lanswer.ishighlight",
+                user: {
+                  email: "$user.email",
+                  name: "$user.name",
+                },
+              },
+              else: "$$REMOVE",
+            },
+          },
+        },
+      },
     },
     {
       $project: {
@@ -416,23 +440,12 @@ app.get("/listforum", async (req, res) => {
         kursus_id: 1,
         question: 1,
         lanswer: {
-          iduser: "$lanswer.iduser",
-          answer: "$lanswer.answer",
-          ishighlight: "$lanswer.ishighlight",
-          user: {
-            email: "$user.email",
-            name: "$user.name",
-            // Include other user fields as needed
+          $cond: {
+            if: { $eq: ["$lanswer", [null]] },
+            then: [],
+            else: "$lanswer",
           },
         },
-      },
-    },
-    {
-      $group: {
-        _id: "$_id",
-        kursus_id: { $first: "$kursus_id" },
-        question: { $first: "$question" },
-        lanswer: { $push: "$lanswer" },
       },
     },
   ]);
@@ -474,6 +487,38 @@ app.post("/submitanswer", async (req, res) => {
     { $push: { lanswer: newAnswer } }
   );
 
+  return res.status(200).json({ message: "berhasil" });
+});
+
+//post question to forum
+app.post("/askquestion", async (req, res) => {
+  let { id_kursus, question } = req.body;
+
+  let user, id_user;
+  const token = req.headers["x-auth-token"] || "";
+  if (token) {
+    try {
+      data = jwt.verify(token, secret);
+      user = await User.find({ _id: data._id });
+      if (user) {
+        flag = true;
+        id_user = data._id;
+      }
+    } catch (err) {
+      return res.status(400).json({
+        err,
+      });
+    }
+  }
+
+  const result = await Forum.insertMany([
+    {
+      kursus_id: id_kursus,
+      question: question,
+      lanswer: [],
+    },
+  ]);
+  console.log(result);
   return res.status(200).json({ message: "berhasil" });
 });
 

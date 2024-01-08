@@ -183,11 +183,16 @@ const forumanswerSchema = new mongoose.Schema({
     default: false,
   },
 });
-const forumSchema = new mongoose.Schema({
-  kursus_id: mongoose.Schema.Types.ObjectId,
-  question: String,
-  lanswer: [forumanswerSchema],
-});
+const forumSchema = new mongoose.Schema(
+  {
+    kursus_id: mongoose.Schema.Types.ObjectId,
+    question: String,
+    lanswer: [forumanswerSchema],
+  },
+  {
+    versionKey: false,
+  }
+);
 
 const Transaction = mongoose.model("Transaction", transactionSchema);
 const Kursus = mongoose.model("Kursus", kursusSchema);

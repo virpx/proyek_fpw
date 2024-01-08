@@ -10,18 +10,22 @@ const Register = () => {
   const host = "http://localhost:3000";
 
   const handleData = async (data) => {
-    try {
-      const result = await axios.post(`${host}/register`, {
-        email: data.email,
-        name: data.name,
-        password: data.password,
-        cpassword: data.cpassword,
-        role: data.role,
-      });
-      alert(result.data.message);
-      navigate("/login");
-    } catch (error) {
-      alert(error.response.data.message);
+    if (data.email == "admin@innospeherelearn.com") {
+      alert("Email already in use");
+    } else {
+      try {
+        const result = await axios.post(`${host}/register`, {
+          email: data.email,
+          name: data.name,
+          password: data.password,
+          cpassword: data.cpassword,
+          role: data.role,
+        });
+        alert(result.data.message);
+        navigate("/login");
+      } catch (error) {
+        alert(error.response.data.message);
+      }
     }
   };
 
