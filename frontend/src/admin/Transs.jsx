@@ -15,13 +15,16 @@ export default function Transs() {
     const [openuser, setopenuser] = useState(false)
     const navigate = useNavigate();
     const navigateToUserList = () => {
-        navigate('ListUser');
+        navigate("/admin/ListUser");
       };
       const navigateToHome = () => {
-        navigate('/admin');
+        navigate("/admin");
       };
       const navigateToTranss = () => {
-        navigate('ListTrans');
+        navigate("/admin/ListTrans");
+      };
+      const navigateToOut = () => {
+        navigate("/");
       };
     return (
         <>
@@ -55,7 +58,7 @@ export default function Transs() {
                                 </ListItemButton>
                             </ListItem>
                             <ListItem disablePadding style={{ background: "#343a40" }} sx={{ margin: 0 }}>
-                                <ListItemButton>
+                                <ListItemButton onClick={navigateToOut}>
                                     <ListItemIcon>
                                         <LogoutIcon style={{ color: 'white' }} ></LogoutIcon>
                                     </ListItemIcon>

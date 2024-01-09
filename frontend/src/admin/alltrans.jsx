@@ -21,12 +21,12 @@ const TransactionList = () => {
   const sortTransactions = (sortBy) => {
     if (sortBy === 'latest') {
       const sortedTransactions = [...transactions].sort((a, b) => {
-        return new Date(b.date) - new Date(a.date);
+        return new Date(b.createdAt) - new Date(a.createdAt);
       });
       setTransactions(sortedTransactions);
     } else if (sortBy === 'oldest') {
       const sortedTransactions = [...transactions].sort((a, b) => {
-        return new Date(a.date) - new Date(b.date);
+        return new Date(a.createdAt) - new Date(b.createdAt);
       });
       setTransactions(sortedTransactions);
     }
@@ -48,8 +48,8 @@ const TransactionList = () => {
       </select>
       <ul>
         {transactions.map((transaction) => (
-          <li key={transaction._id} style={{color:"black"}}>
-            Transaction ID: {transaction._id} - Date: {transaction.createdAt} - Amount: {transaction.paid_amount}
+          <li key={transaction.order_id} style={{color:"black"}}>
+            Transaction ID: {transaction.order_id} - Date: {transaction.createdAt} - Amount: {transaction.paid_amount}
           </li>
         ))}
       </ul>

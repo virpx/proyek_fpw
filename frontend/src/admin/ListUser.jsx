@@ -45,14 +45,14 @@ const UserList = () => {
                 <tr key={user._id} className='trr' >
                     <td className='tdd'>{user.name}</td>
                     <td className='tdd'>{user.role === 0 ? 'Student' : 'Teacher'}</td>
-                    <td> className='tdd'
+                    <td className='tdd'> 
                     <button onClick={() => deleteUser(user._id)}>Hapus</button>
                     </td>
                 </tr>
                 ))
             ) : (
                 <tr>
-                <td colSpan="3">Tidak ada data pengguna.</td>
+                <td colSpan="3" className='tdd'>Tidak ada data pengguna.</td>
                 </tr>
             )}
         </tbody>

@@ -1,15 +1,4 @@
-import {
-  AppBar,
-  Collapse,
-  Container,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar,  Collapse, Container, List,  ListItem, ListItemButton, ListItemIcon, ListItemText,  Toolbar,  Typography,} from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
 import StyleIcon from "@mui/icons-material/Style";
@@ -21,20 +10,22 @@ import "../css/navbar.css";
 import { useEffect, useState } from "react";
 import Navtas from "./NavAtas";
 import MyChart from "./Homee";
-import UserList from "./ListUser";
 import { useNavigate } from "react-router-dom";
 import authHeader from "../services/auth-header";
 export default function Homeadmin() {
   const [openuser, setopenuser] = useState(false);
   const navigate = useNavigate();
   const navigateToUserList = () => {
-    navigate("ListUser");
+    navigate("/admin/ListUser");
   };
   const navigateToHome = () => {
     navigate("/admin");
   };
   const navigateToTranss = () => {
-    navigate("ListTrans");
+    navigate("/admin/ListTrans");
+  };
+  const navigateToOut = () => {
+    navigate("/");
   };
   const auth = () => {
     var header = authHeader();
@@ -76,11 +67,7 @@ export default function Homeadmin() {
         >
           <div style={{ width: "max-content", background: "#343a40" }}>
             <List sx={{ width: "100%", minWidth: 250 }} aria-label="contacts">
-              <ListItem
-                disablePadding
-                style={{ background: "#343a40" }}
-                sx={{ margin: 0 }}
-              >
+              <ListItem disablePadding style={{ background: "#343a40" }} sx={{ margin: 0 }} >
                 <ListItemButton onClick={navigateToHome}>
                   <ListItemIcon>
                     <HomeIcon style={{ color: "white" }}></HomeIcon>
@@ -88,11 +75,7 @@ export default function Homeadmin() {
                   <ListItemText primary="Home" />
                 </ListItemButton>
               </ListItem>
-              <ListItem
-                disablePadding
-                style={{ background: "#343a40" }}
-                sx={{ margin: 0 }}
-              >
+              <ListItem disablePadding style={{ background: "#343a40" }} sx={{ margin: 0 }}>
                 <ListItemButton onClick={navigateToTranss}>
                   <ListItemIcon>
                     <StyleIcon style={{ color: "white" }}></StyleIcon>
@@ -100,11 +83,7 @@ export default function Homeadmin() {
                   <ListItemText primary="Transaction" />
                 </ListItemButton>
               </ListItem>
-              <ListItem
-                disablePadding
-                style={{ background: "#343a40" }}
-                sx={{ margin: 0 }}
-              >
+              <ListItem disablePadding style={{ background: "#343a40" }} sx={{ margin: 0 }} >
                 <ListItemButton onClick={navigateToUserList}>
                   <ListItemIcon>
                     <PersonIcon style={{ color: "white" }}></PersonIcon>
@@ -112,17 +91,8 @@ export default function Homeadmin() {
                   <ListItemText primary="User" />
                 </ListItemButton>
               </ListItem>
-              <ListItem
-                disablePadding
-                style={{ background: "#343a40" }}
-                sx={{ margin: 0 }}
-              >
-                <ListItemButton
-                  onClick={() => {
-                    localStorage.removeItem("user");
-                    navigate("/");
-                  }}
-                >
+              <ListItem disablePadding style={{ background: "#343a40" }} sx={{ margin: 0 }} >
+                <ListItemButton onClick={() => {localStorage.removeItem("user"); navigateToOut }} >
                   <ListItemIcon>
                     <LogoutIcon style={{ color: "white" }}></LogoutIcon>
                   </ListItemIcon>
