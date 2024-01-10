@@ -92,6 +92,13 @@ const Login = () => {
               required
               {...register("password")}
             />
+            <Link
+              to="/forgotpassword"
+              className="register-link"
+              style={{ marginLeft: "157px" }}
+            >
+              Forgot password?
+            </Link>
           </div>
           <button className="login-button">Login</button>
         </form>

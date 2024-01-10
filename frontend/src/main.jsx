@@ -5,6 +5,8 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./slices/store.js";
 import Home from "./Home.jsx";
 import Error from "./Error";
 import Login from "./Login";
@@ -18,7 +20,7 @@ import Contact from "./Index/Contact.tsx";
 import About from "./Index/About.tsx";
 import DetailCourse from "./Student/DetailCourse.jsx";
 import Class from "./Student/Class.jsx";
-import Homeadmin from "./admin/Homeadmin.jsx";
+import Homeadmin from "./Admin/Homeadmin.jsx";
 import authHeader from "./services/auth-header";
 import Indexteacher from "./Teacher/Indexteacher.jsx";
 import Listkursus from "./Teacher/Listkursus.jsx";
@@ -35,6 +37,7 @@ import Viewtaskupload from "./Teacher/center/Viewtaskupload.jsx";
 import UserProfile from "./Student/userProfile.jsx";
 import ListsUser from "./admin/Userss.jsx";
 import Transs from "./admin/Transs.jsx";
+import ForgotPassword from "./ForgetPassword.jsx";
 
 const host = "http://localhost:3000";
 
@@ -55,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/forgotpassword",
+        element: <ForgotPassword />,
       },
       {
         path: "/courses",
@@ -143,7 +150,7 @@ const router = createBrowserRouter([
           },
           {
             path: "ListTrans",
-            element: <Transs></Transs>
+            element: <Transs></Transs>,
           },
         ],
       },
@@ -392,5 +399,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
 );

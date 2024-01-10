@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const axios = require("axios");
+const nodemailer = require("nodemailer");
 const { ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -520,6 +521,80 @@ app.post("/askquestion", async (req, res) => {
   ]);
   console.log(result);
   return res.status(200).json({ message: "berhasil" });
+});
+
+//send otp
+app.post("/sendotp", async (req, res) => {
+  let { email, otp } = req.body;
+  const findUser = await User.findOne({ email: email });
+  if (!findUser) {
+    return res
+      .status(400)
+      .json({ message: "Account not found, you have to register first" });
+  }
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    auth: {
+      user: "learnfocusontarget@outlook.com",
+      pass: "noreplylearnfocus222Q",
+    },
+    tls: {
+      rejectUnauthorized: true,
+    },
+  });
+  transporter.sendMail(
+    {
+      from: "learnfocusontarget@outlook.com", // verified sender email
+      to: email, // recipient email
+      subject: "Verification Code (OTP) to Reset Password", // Subject line
+      text: "Verification Code (OTP) is " + otp, // plain text body
+      // html: "<b>Hello world!</b>", // html body
+    },
+    function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    }
+  );
+  return res.status(200).json({ message: "Code sent to " + email });
+});
+
+app.post("/resetpassword", async (req, res) => {
+  let { password, cpassword, email } = req.body;
+
+  if (password.length < 8) {
+    return res.status(400).json({
+      message: "Minimum password length is 8 characters!",
+    });
+  }
+
+  if (password !== cpassword) {
+    return res.status(400).json({
+      message: "Password and Confirm Password Unmatched!",
+    });
+  }
+
+  let checkEmail = await User.findOne({ email: email });
+
+  let hashedPassword;
+  await bcrypt.hash(password, 10).then((hash) => {
+    hashedPassword = hash;
+  });
+
+  await User.updateOne(
+    { email: checkEmail.email },
+    {
+      $set: {
+        password: hashedPassword,
+      },
+    }
+  );
+  return res.status(200).json({
+    message: "Reset Password Succesfully!",
+  });
 });
 
 //TRANSACTION
