@@ -12,6 +12,7 @@ import Navtas from "./NavAtas";
 import MyChart from "./Homee";
 import { useNavigate } from "react-router-dom";
 import authHeader from "../services/auth-header";
+import CombinedChart from "./Chart";
 export default function Homeadmin() {
   const [openuser, setopenuser] = useState(false);
   const navigate = useNavigate();
@@ -104,6 +105,7 @@ export default function Homeadmin() {
           <div style={{ width: "200px", background: "white", flexGrow: "1" }}>
             <div>
               <MyChart />
+              <CombinedChart />
             </div>
           </div>
         </div>
