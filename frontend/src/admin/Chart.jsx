@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { LineChart } from '@mui/x-charts/LineChart'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { LineChart } from "@mui/x-charts/LineChart";
 
 const CombinedChart = () => {
   const [users, setUsers] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
+  const fetchData = async () => {
+    try {
+      const responseUsers = await axios.get("http://localhost:3000/users");
+      const responseTransactions = await axios.get(
+        "http://localhost:3000/transactions"
+      );
+
+      setUsers(responseUsers.data);
+      setTransactions(responseTransactions.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const responseUsers = await axios.get('http://localhost:3000/users');
-        const responseTransactions = await axios.get('http://localhost:3000/transactions');
-
-        setUsers(responseUsers.data);
-        setTransactions(responseTransactions.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -26,7 +28,7 @@ const CombinedChart = () => {
   const getMonthlyUserData = () => {
     const monthlyData = {};
 
-    users.forEach(user => {
+    users.forEach((user) => {
       const date = new Date(user.createdAt);
       const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`;
 
@@ -44,7 +46,7 @@ const CombinedChart = () => {
   const getMonthlyTransactionData = () => {
     const monthlyData = {};
 
-    transactions.forEach(transaction => {
+    transactions.forEach((transaction) => {
       const date = new Date(transaction.createdAt);
       const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`;
 
@@ -57,13 +59,12 @@ const CombinedChart = () => {
 
     return monthlyData;
   };
-
   // Combine user and transaction data
   const combinedData = () => {
     const userData = getMonthlyUserData();
     const transactionData = getMonthlyTransactionData();
 
-    const combined = Object.keys(userData).map(key => ({
+    const combined = Object.keys(userData).map((key) => ({
       monthYear: key,
       newUser: userData[key],
       transaction: transactionData[key] || 0,
@@ -71,38 +72,48 @@ const CombinedChart = () => {
 
     return combined;
   };
-
   const data = combinedData();
+  const xData = data.map((dataPoint) => dataPoint.newUser);
+  const yData = data.map((dataPoint) => dataPoint.transaction);
+  console.log(combinedData());
+  return (
+    <div>
+      {data.length > 0 && (
+        <div>
+          <h2>Combined Users and Transactions Chart</h2>
+          <LineChart
+            xAxis={[
+              {
+                scaleType: "point",
+                data: [
+                  "",
+                  "January",
+                  "February",
+                  "March",
+                  "April",
+                  "May",
+                  "June",
+                  "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December",
+                ],
+              },
+            ]}
+            series={[
+              { curve: "linear", data: xData, label: "User" },
+              { curve: "linear", data: yData, label: "Transaction" },
+            ]}
+            width={1000}
+            height={400}
+          />
+        </div>
+      )}
+      {data.length === 0 && <div>Data not available</div>}
+    </div>
+  );
+};
 
-  if (data.length > 0) {
-    return (
-      <div>
-        <h2>Combined Users and Transactions Chart</h2>
-        <LineChart
-          data={data}
-          xAxis={[{ dataKey: "monthYear" }]}
-          series={[
-            {
-              dataKey: "newUser",
-              name: "New Users",
-              // Pastikan data newUser tidak kosong
-              data: data.map(item => item.newUser || 0),
-            },
-            {
-              dataKey: "transaction",
-              name: "Transactions",
-              // Pastikan data transaction tidak kosong
-              data: data.map(item => item.transaction || 0),
-            },
-          ]}
-          width={500}
-          height={300}
-        />
-      </div>
-    );
-  } else {
-    // Penanganan jika data kosong
-    return <div>Data not available</div>;
-  }
-}
 export default CombinedChart;
