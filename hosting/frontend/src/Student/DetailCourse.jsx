@@ -44,7 +44,6 @@ const DetailCourse = () => {
     fetchImage();
   }, []);
   const hrefemail = "mailto:" + teacher.email;
-
   const handleenroll = async () => {
     const result = await axios.post(
       `${host}/create-payment`,
@@ -55,9 +54,21 @@ const DetailCourse = () => {
         },
       }
     );
-    window.open(result.data.redirect_url, "_blank", "rel=noopener noreferrer");
+    var windowpayment = window.open(result.data.redirect_url, "_blank", "fullscreen=yes");
+    cek_tutup_payment(windowpayment);
   };
-
+  async function cek_tutup_payment(windowe){
+    if(windowe.closed){
+      axios.post(`${host}/payment-notification-handler`).then(()=>{
+        const user = JSON.parse(localStorage.getItem("user"));
+        window.location.href = "/mycourses/" + user._id;
+      })
+    }else{
+      setTimeout(function(){
+        cek_tutup_payment(windowe)
+      },100)
+    }
+  }
   return (
     <>
       <Navbar />
