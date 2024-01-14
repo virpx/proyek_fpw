@@ -14,7 +14,7 @@ export default function Addmateri() {
   const navigate = useNavigate();
   const dataload = useLoaderData();
   console.log(dataload);
-  const urlapi = "https://amused-kerchief-eel.cyclic.app/teacher/";
+  const urlapi = "https://clean-tam-worm.cyclic.app/teacher/";
   async function submitform(data) {
     if (dataload[0] == "add") {
       const formdata = new FormData();

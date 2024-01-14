@@ -39,7 +39,7 @@ import ListsUser from "./admin/Userss.jsx";
 import Transs from "./admin/Transs.jsx";
 import ForgotPassword from "./ForgetPassword.jsx";
 
-const host = "https://amused-kerchief-eel.cyclic.app";
+const host = "https://clean-tam-worm.cyclic.app";
 
 const router = createBrowserRouter([
   {
@@ -176,7 +176,7 @@ const router = createBrowserRouter([
                 path: "edit/:id",
                 loader: async (data) => {
                   var axiosget = await axios.get(
-                    "https://amused-kerchief-eel.cyclic.app/teacher/getcoursedetail/" +
+                    "https://clean-tam-worm.cyclic.app/teacher/getcoursedetail/" +
                       data.params.id,
                     {
                       headers: {
@@ -196,7 +196,7 @@ const router = createBrowserRouter([
                     index: true,
                     loader: async (data) => {
                       var axiosget = await axios.get(
-                        "https://amused-kerchief-eel.cyclic.app/teacher/getcenter/" +
+                        "https://clean-tam-worm.cyclic.app/teacher/getcenter/" +
                           data.params.id,
                         {
                           headers: {
@@ -236,7 +236,7 @@ const router = createBrowserRouter([
                     path: "editquiz/:idquiz",
                     loader: async (data) => {
                       var hasil = await axios.get(
-                        "https://amused-kerchief-eel.cyclic.app/teacher/getquizdetail/" +
+                        "https://clean-tam-worm.cyclic.app/teacher/getquizdetail/" +
                           data.params.id +
                           "/" +
                           data.params.idquiz,
@@ -261,7 +261,7 @@ const router = createBrowserRouter([
                     path: "task/:idtaske",
                     loader: async (data) => {
                       var hasil = await axios.get(
-                        "https://amused-kerchief-eel.cyclic.app/teacher/taskkumpul/" +
+                        "https://clean-tam-worm.cyclic.app/teacher/taskkumpul/" +
                           data.params.idtaske,
                         {
                           headers: {
@@ -279,7 +279,7 @@ const router = createBrowserRouter([
                     path: "edittopic/:idtopic",
                     loader: async (data) => {
                       var hasil = await axios.get(
-                        "https://amused-kerchief-eel.cyclic.app/teacher/gettopicdetail/" +
+                        "https://clean-tam-worm.cyclic.app/teacher/gettopicdetail/" +
                           data.params.id +
                           "/" +
                           data.params.idtopic,
@@ -304,7 +304,7 @@ const router = createBrowserRouter([
                     path: "edittask/:idtask",
                     loader: async (data) => {
                       var hasil = await axios.get(
-                        "https://amused-kerchief-eel.cyclic.app/teacher/gettaskdetail/" +
+                        "https://clean-tam-worm.cyclic.app/teacher/gettaskdetail/" +
                           data.params.id +
                           "/" +
                           data.params.idtask,
@@ -333,7 +333,7 @@ const router = createBrowserRouter([
             path: "report",
             loader: async () => {
               var hasil = await axios.get(
-                "https://amused-kerchief-eel.cyclic.app/teacher/reportdata",
+                "https://clean-tam-worm.cyclic.app/teacher/reportdata",
                 {
                   headers: {
                     "x-auth-token": JSON.parse(localStorage.getItem("user"))
@@ -352,7 +352,7 @@ const router = createBrowserRouter([
                 index: true,
                 loader: async () => {
                   var hasil = await axios.get(
-                    "https://amused-kerchief-eel.cyclic.app/teacher/getchannel",
+                    "https://clean-tam-worm.cyclic.app/teacher/getchannel",
                     {
                       headers: {
                         "x-auth-token": JSON.parse(localStorage.getItem("user"))
@@ -368,7 +368,7 @@ const router = createBrowserRouter([
                 path: ":idforum",
                 loader: async (data) => {
                   var hasil = await axios.get(
-                    "https://amused-kerchief-eel.cyclic.app/teacher/getforumdetail/" +
+                    "https://clean-tam-worm.cyclic.app/teacher/getforumdetail/" +
                       data.params.idforum,
                     {
                       headers: {
@@ -380,7 +380,7 @@ const router = createBrowserRouter([
                   var namaarr = [];
                   for (const iterator of hasil.data.lanswer) {
                     const namauser = await axios.get(
-                      "https://amused-kerchief-eel.cyclic.app/teacher/getnamauser/" +
+                      "https://clean-tam-worm.cyclic.app/teacher/getnamauser/" +
                         iterator.iduser
                     );
                     namaarr.push(namauser.data);

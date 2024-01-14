@@ -5,7 +5,7 @@ import axios from "axios";
 
 export default function Coursecenter() {
   const navigate = useNavigate();
-  const urlapi = "https://amused-kerchief-eel.cyclic.app/teacher/";
+  const urlapi = "https://clean-tam-worm.cyclic.app/teacher/";
   const dataload = useLoaderData();
   async function removemateri(idmateri) {
     var hasil = await axios.get(

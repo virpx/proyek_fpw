@@ -15,7 +15,7 @@ import { Buffer } from "buffer";
 import Footer from "../Index/Footer";
 import TeacherNavbar from "../Teacher/TeacherNavbar";
 
-const host = "https://amused-kerchief-eel.cyclic.app";
+const host = "https://clean-tam-worm.cyclic.app";
 
 const UserProfile = () => {
   const user = JSON.parse(localStorage.getItem("user"));

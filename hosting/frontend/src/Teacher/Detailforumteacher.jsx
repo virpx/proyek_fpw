@@ -7,7 +7,7 @@ import axios from "axios";
 export default function Detailforumteacher() {
     const navigate = useNavigate();
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const apiurl = "https://amused-kerchief-eel.cyclic.app/teacher/"
+    const apiurl = "https://clean-tam-worm.cyclic.app/teacher/"
     const dataload = useLoaderData();
     async function kirimjawaban(data) {
         var datasend = {

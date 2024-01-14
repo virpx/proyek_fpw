@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import { Buffer } from "buffer";
 import "./css/navbar.css";
 import axios from "axios";
-const host = "https://amused-kerchief-eel.cyclic.app";
+const host = "https://clean-tam-worm.cyclic.app";
 const pages = ["Home", "Courses", "My Courses"];
 const settings = ["User Profile", "Logout"];
 

@@ -7,7 +7,7 @@ import React from "react";
 const Register = () => {
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
-  const host = "https://amused-kerchief-eel.cyclic.app";
+  const host = "https://clean-tam-worm.cyclic.app";
 
   const handleData = async (data) => {
     if (data.email == "admin@innospeherelearn.com") {

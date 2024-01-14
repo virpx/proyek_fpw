@@ -7,7 +7,7 @@ import axios from "axios";
 export default function Addquiz() {
   const dataload = useLoaderData();
   const navigate = useNavigate();
-  const urlapi = "https://amused-kerchief-eel.cyclic.app/teacher/";
+  const urlapi = "https://clean-tam-worm.cyclic.app/teacher/";
   const [quizName, setQuizName] = useState("");
   const [quizQuestions, setQuizQuestions] = useState([
     {

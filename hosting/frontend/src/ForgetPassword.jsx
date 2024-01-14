@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { setOTP } from "./slices/resetPassword";
 import { useEffect, useState } from "react";
 import axios from "axios";
-const host = "https://amused-kerchief-eel.cyclic.app";
+const host = "https://clean-tam-worm.cyclic.app";
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [OTP, setKodeOTP] = useState("");

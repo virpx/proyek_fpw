@@ -18,7 +18,7 @@ const chartsParams = {
   margin: { bottom: 20, left: 25, right: 5 },
   height: 300,
 };
-const host = "https://amused-kerchief-eel.cyclic.app";
+const host = "https://clean-tam-worm.cyclic.app";
 export default function Indexteacher() {
   const [color, setColor] = useState("#4e79a7");
   const [kategoripilih, setkategoripilih] = useState("All");
@@ -28,7 +28,7 @@ export default function Indexteacher() {
   const [kursusshow, setkursusshow] = useState();
   const loaddata = async () => {
     var axiosdata = await axios.get(
-      "https://amused-kerchief-eel.cyclic.app/teacher/teacherdata",
+      "https://clean-tam-worm.cyclic.app/teacher/teacherdata",
       {
         headers: {
           "x-auth-token": JSON.parse(localStorage.getItem("user")).token,
@@ -233,7 +233,7 @@ export default function Indexteacher() {
                               >
                                 <img
                                   src={
-                                    "https://amused-kerchief-eel.cyclic.app/teacher/getimage?pathe=" +
+                                    "https://clean-tam-worm.cyclic.app/teacher/getimage?pathe=" +
                                     btoa(data.thumb_path)
                                   }
                                   className="img-fluid"

@@ -8,7 +8,7 @@ import axios from "axios";
 export default function Addtask() {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const navigate = useNavigate();
-    const urlapi = "https://amused-kerchief-eel.cyclic.app/teacher/"
+    const urlapi = "https://clean-tam-worm.cyclic.app/teacher/"
     const dataload = useLoaderData();
     console.log(dataload)
     async function submitform(data) {

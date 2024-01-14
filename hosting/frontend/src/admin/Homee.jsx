@@ -10,8 +10,8 @@ const MyChart = () => {
   const [loading, setloading] = useState("belum");
   const fetchData = async () => {
     try {
-      const responseUsers = await axios.get("https://amused-kerchief-eel.cyclic.app/users");
-      const responseKursus = await axios.get("https://amused-kerchief-eel.cyclic.app/kursus");
+      const responseUsers = await axios.get("https://clean-tam-worm.cyclic.app/users");
+      const responseKursus = await axios.get("https://clean-tam-worm.cyclic.app/kursus");
 
       console.log("Response Users:", responseUsers.data);
       console.log("Response Kursus:", responseKursus.data);

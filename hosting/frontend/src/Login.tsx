@@ -6,7 +6,7 @@ import "./css/loginstudent.css";
 import React from "react";
 import authHeader from "./services/auth-header";
 
-const host = "https://amused-kerchief-eel.cyclic.app";
+const host = "https://clean-tam-worm.cyclic.app";
 const Login = () => {
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();

@@ -19,7 +19,7 @@ export default function Editcourse() {
             formdata.append("deskripsi", data.deskripsi);
             formdata.append("id",loaderdata._id.toString())
             formdata.append("thumbimg", data.thumbimg[0]);
-            var hasil = await axios.post("https://amused-kerchief-eel.cyclic.app/teacher/updatekursuswithimage",formdata,{
+            var hasil = await axios.post("https://clean-tam-worm.cyclic.app/teacher/updatekursuswithimage",formdata,{
                 headers: {
                     "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token,
                 }
@@ -36,7 +36,7 @@ export default function Editcourse() {
                 deskripsi:data.deskripsi,
                 id:loaderdata._id.toString()
             }
-            var hasil = await axios.post("https://amused-kerchief-eel.cyclic.app/teacher/updatekursusnoimage",datapost,{
+            var hasil = await axios.post("https://clean-tam-worm.cyclic.app/teacher/updatekursusnoimage",datapost,{
                 headers: {
                     "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token,
                     'content-type': 'application/x-www-form-urlencoded'

@@ -7,7 +7,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 
 export default function Listkursus() {
-    const urlapi = "https://amused-kerchief-eel.cyclic.app/teacher/"
+    const urlapi = "https://clean-tam-worm.cyclic.app/teacher/"
     const navigate = useNavigate();
     const [loadingpage, setloadingpage] = useState("belum");
     const [dataload, setdataload] = useState();

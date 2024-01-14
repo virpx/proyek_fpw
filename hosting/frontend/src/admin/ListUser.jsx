@@ -6,7 +6,7 @@ const UserList = () => {
   const [users, setUsers] = useState([]);
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("https://amused-kerchief-eel.cyclic.app/users"); // Sesuaikan dengan URL endpoint backend Anda
+      const response = await axios.get("https://clean-tam-worm.cyclic.app/users"); // Sesuaikan dengan URL endpoint backend Anda
       setUsers(response.data); // Sesuaikan dengan respon dari backend (response.data.users)
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -18,7 +18,7 @@ const UserList = () => {
 
   const deleteUser = async (id_user) => {
     try {
-      await axios.delete(`https://amused-kerchief-eel.cyclic.app/users/${id_user}`); // Sesuaikan dengan URL endpoint untuk menghapus pengguna
+      await axios.delete(`https://clean-tam-worm.cyclic.app/users/${id_user}`); // Sesuaikan dengan URL endpoint untuk menghapus pengguna
       setUsers(users.filter((user) => user._id !== id_user));
       console.log("User deleted successfully");
     } catch (error) {

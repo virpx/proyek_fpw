@@ -28,7 +28,7 @@ export default function AddCourse() {
             formdata.append("harga",data.harga);
             formdata.append("kategori",data.kategori);
             formdata.append("deskripsi",data.deskripsi);
-            var hasil = await axios.post("https://amused-kerchief-eel.cyclic.app/teacher/addkursus",formdata,{
+            var hasil = await axios.post("https://clean-tam-worm.cyclic.app/teacher/addkursus",formdata,{
                 headers: {
                     "x-auth-token": (JSON.parse(localStorage.getItem("user"))).token
                 }

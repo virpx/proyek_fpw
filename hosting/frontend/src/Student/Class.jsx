@@ -9,7 +9,7 @@ import "../css/coursereport.css";
 import "../css/courseassignment.css";
 import authHeader from "../services/auth-header";
 import axios from "axios";
-const host = "https://amused-kerchief-eel.cyclic.app";
+const host = "https://clean-tam-worm.cyclic.app";
 const Class = () => {
   const navigate = useNavigate();
   const data = useLoaderData();

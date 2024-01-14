@@ -16,7 +16,7 @@ export default function Viewtaskupload() {
     reset,
     formState: { errors },
   } = useForm();
-  const urlapi = "https://amused-kerchief-eel.cyclic.app/teacher/";
+  const urlapi = "https://clean-tam-worm.cyclic.app/teacher/";
   async function submitnilai(data) {
     const hasil = await axios.post(urlapi + "simpannilai", data, {
       headers: {
@@ -98,7 +98,7 @@ export default function Viewtaskupload() {
                         <td>
                           <a
                             href={
-                              "https://amused-kerchief-eel.cyclic.app/teacher/viewassignment/" +
+                              "https://clean-tam-worm.cyclic.app/teacher/viewassignment/" +
                               data.path
                             }
                             target="_blank"

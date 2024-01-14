@@ -23,7 +23,7 @@ export default function TeacherNavbar() {
       ) {
         if (
           (
-            await axios.get("https://amused-kerchief-eel.cyclic.app/teacher/ceklogin", {
+            await axios.get("https://clean-tam-worm.cyclic.app/teacher/ceklogin", {
               headers: {
                 "x-auth-token": header["x-access-token"],
               },

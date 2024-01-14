@@ -8,9 +8,9 @@ const CombinedChart = () => {
 
   const fetchData = async () => {
     try {
-      const responseUsers = await axios.get("https://amused-kerchief-eel.cyclic.app/users");
+      const responseUsers = await axios.get("https://clean-tam-worm.cyclic.app/users");
       const responseTransactions = await axios.get(
-        "https://amused-kerchief-eel.cyclic.app/transactions"
+        "https://clean-tam-worm.cyclic.app/transactions"
       );
 
       setUsers(responseUsers.data);

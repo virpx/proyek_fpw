@@ -8,7 +8,7 @@ const TransactionList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://amused-kerchief-eel.cyclic.app/transactions');
+        const response = await axios.get('https://clean-tam-worm.cyclic.app/transactions');
         setTransactions(response.data);
       } catch (error) {
         console.error('Error fetching transactions:', error);
