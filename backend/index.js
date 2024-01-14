@@ -644,7 +644,7 @@ app.post("/create-payment", async (req, res) => {
       user: id_user,
       kursus: id_kursus,
     });
-    if (cekada.status == "pending") {
+    if (cekada && cekada.status == "pending") {
       const updateid = await Transaction.updateOne(
         {
           user: id_user,
@@ -671,94 +671,72 @@ app.post("/create-payment", async (req, res) => {
   }
 });
 
-//temp check payment
-app.post("/temppayment-notification-handler", async (req, res) => {
-  const url =
-    "https://api.sandbox.midtrans.com/v2" + `/${req.body.order_id}/status`;
-  const data = (
-    await axios.get(url, {
-      auth: {
-        username: "SB-Mid-server-ZCktv1JIy74Z0J9kPErDHJ77",
-        password: "",
-      },
-    })
-  ).data;
-
-  if (data.status_code == "404") {
-    return;
-  }
-
-  try {
-    const transaction = await Transaction.findOne({ order_id: data.order_id });
-
-    if (!transaction) {
-      console.log(`Transaction with order_id ${data.order_id} not found.`);
-      return;
-    }
-
-    transaction.status = data.transaction_status;
-
-    await transaction.save();
-
-    console.log(
-      `Transaction with order_id ${data.order_id} updated successfully.`
-    );
-
-    if (
-      data.transaction_status === "capture" ||
-      data.transaction_status === "settlement"
-    ) {
-      const newKursus = {
-        kursus: transaction.kursus,
-        last_progress: 1,
-        current_index: 1,
-        nilai_quiz: [],
-      };
-      const finduser = await User.findOne({ _id: transaction.user });
-      var sudahenroll = false;
-
-      finduser.listkursus.map((lk) => {
-        if (lk.kursus == newKursus.kursus) {
-          sudahenroll = true;
-        }
-      });
-
-      if (!sudahenroll) {
-        const pushKursus = await User.updateOne(
-          { _id: transaction.user },
-          { $push: { listkursus: newKursus } }
-        );
-      }
-    }
-  } catch (error) {
-    console.error("Error handling payment notification:", error);
-  }
-
-  res.status(200).json({ status: "success" });
-});
-
 // Endpoint to handle Midtrans payment notifications
 app.post("/payment-notification-handler", async (req, res) => {
-  const data = req.body;
+  const listTrans = await Transaction.find();
+  listTrans.map(async (l) => {
+    const url = "https://api.sandbox.midtrans.com/v2" + `/${l.order_id}/status`;
+    const data = (
+      await axios.get(url, {
+        auth: {
+          username: "SB-Mid-server-ZCktv1JIy74Z0J9kPErDHJ77",
+          password: "",
+        },
+      })
+    ).data;
 
-  try {
-    const transaction = await Transaction.findOne({ order_id: data.order_id });
-
-    if (!transaction) {
-      console.log(`Transaction with order_id ${data.order_id} not found.`);
+    if (data.status_code == "404") {
       return;
     }
 
-    transaction.status = data.transaction_status;
+    try {
+      const transaction = await Transaction.findOne({
+        order_id: data.order_id,
+      });
 
-    await transaction.save();
+      if (!transaction) {
+        console.log(`Transaction with order_id ${data.order_id} not found.`);
+        return;
+      }
 
-    console.log(
-      `Transaction with order_id ${data.order_id} updated successfully.`
-    );
-  } catch (error) {
-    console.error("Error handling payment notification:", error);
-  }
+      transaction.status = data.transaction_status;
+
+      await transaction.save();
+
+      console.log(
+        `Transaction with order_id ${data.order_id} updated successfully.`
+      );
+
+      if (
+        data.transaction_status === "capture" ||
+        data.transaction_status === "settlement"
+      ) {
+        const newKursus = {
+          kursus: transaction.kursus,
+          last_progress: 1,
+          current_index: 1,
+          nilai_quiz: [],
+        };
+        const finduser = await User.findOne({ _id: transaction.user });
+        var sudahenroll = false;
+
+        finduser.listkursus.map((lk) => {
+          if (lk.kursus == newKursus.kursus) {
+            sudahenroll = true;
+          }
+        });
+
+        if (!sudahenroll) {
+          const pushKursus = await User.updateOne(
+            { _id: transaction.user },
+            { $push: { listkursus: newKursus } }
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error handling payment notification:", error);
+    }
+  });
 
   res.status(200).json({ status: "success" });
 });

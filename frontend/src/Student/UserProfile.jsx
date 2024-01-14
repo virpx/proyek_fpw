@@ -52,6 +52,7 @@ const UserProfile = () => {
       );
       const imageSrc = `data:image/jpeg;base64,${imageBase64}`;
       setAvatarSrc(imageSrc);
+      console.log(imageSrc);
     } catch (error) {
       console.error("Error fetching image:", error.message);
     }

@@ -1,5 +1,5 @@
 const express = require("express");
-const AWS = require('aws-sdk');
+const AWS = require("aws-sdk");
 const mongoose = require("mongoose");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
@@ -15,9 +15,7 @@ const port = 3000;
 const cors = require("cors");
 const teacher = require("./teacher");
 const s3 = new AWS.S3();
-app.use(
-  cors()
-);
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const helper = require("./helper");
@@ -116,7 +114,7 @@ app.get("/activeUser", async (req, res) => {
       if (user) {
         flag = true;
       }
-    } catch (err) { }
+    } catch (err) {}
   }
   return res.status(200).json({
     user,
@@ -201,8 +199,8 @@ app.get("/kursus/:_id", async (req, res) => {
   let linkmateri = [];
   for (var i = 0; i < kursus[0].materi.length; i++) {
     var pathbiasa = kursus[0].materi[i].path;
-    const url = s3.getSignedUrl('getObject', {
-      Bucket: 'cyclic-clean-tam-worm-ap-northeast-2',
+    const url = s3.getSignedUrl("getObject", {
+      Bucket: "cyclic-clean-tam-worm-ap-northeast-2",
       Key: pathbiasa,
       ResponseContentType: "application/pdf",
       ResponseContentDisposition: "inline",
@@ -213,7 +211,7 @@ app.get("/kursus/:_id", async (req, res) => {
   return res.status(200).json({
     kursus: kursus,
     teacher: user,
-    materi : linkmateri,
+    materi: linkmateri,
   });
 });
 
@@ -632,7 +630,7 @@ app.post("/create-payment", async (req, res) => {
   try {
     gross_amount = parseInt(gross_amount);
     const order_id = helper.generateOrderId(id_user);
-    const midtransPromise = await axios.post(
+    const midtransPromise = axios.post(
       "https://app.sandbox.midtrans.com/snap/v1/transactions",
       {
         transaction_details: {
@@ -655,6 +653,15 @@ app.post("/create-payment", async (req, res) => {
       user: id_user,
       kursus: id_kursus,
     });
+    if (cekada && cekada.status == "pending") {
+      const updateid = await Transaction.updateOne(
+        {
+          user: id_user,
+          kursus: id_kursus,
+        },
+        { $set: { order_id: order_id } }
+      );
+    }
     if (cekada == null) {
       const newTransaction = new Transaction({
         order_id: order_id,
@@ -664,14 +671,6 @@ app.post("/create-payment", async (req, res) => {
         status: "pending",
       });
       newTransaction.save();
-    } else if (cekada.status == "pending") {
-      const updateid = await Transaction.updateOne(
-        {
-          user: id_user,
-          kursus: id_kursus,
-        },
-        { $set: { order_id: order_id } }
-      );
     }
 
     return res.status(200).json((await midtransPromise).data);
@@ -681,101 +680,81 @@ app.post("/create-payment", async (req, res) => {
   }
 });
 
-//temp check payment
-app.post("/temppayment-notification-handler", async (req, res) => {
-  const url =
-    "https://api.sandbox.midtrans.com/v2" + `/${req.body.order_id}/status`;
-  const data = (
-    await axios.get(url, {
-      auth: {
-        username: "SB-Mid-server-ZCktv1JIy74Z0J9kPErDHJ77",
-        password: "",
-      },
-    })
-  ).data;
-
-  if (data.status_code == "404") {
-    return;
-  }
-
-  try {
-    const transaction = await Transaction.findOne({ order_id: data.order_id });
-
-    if (!transaction) {
-      console.log(`Transaction with order_id ${data.order_id} not found.`);
-      return;
-    }
-
-    transaction.status = data.transaction_status;
-
-    await transaction.save();
-
-    console.log(
-      `Transaction with order_id ${data.order_id} updated successfully.`
-    );
-
-    if (
-      data.transaction_status === "capture" ||
-      data.transaction_status === "settlement"
-    ) {
-      const newKursus = {
-        kursus: transaction.kursus,
-        last_progress: 1,
-        current_index: 1,
-        nilai_quiz: [],
-      };
-      const finduser = await User.findOne({ _id: transaction.user });
-      var sudahenroll = false;
-
-      finduser.listkursus.map((lk) => {
-        if (lk.kursus == newKursus.kursus) {
-          sudahenroll = true;
-        }
-      });
-
-      if (!sudahenroll) {
-        const pushKursus = await User.updateOne(
-          { _id: transaction.user },
-          { $push: { listkursus: newKursus } }
-        );
-      }
-    }
-  } catch (error) {
-    console.error("Error handling payment notification:", error);
-  }
-
-  res.status(200).json({ status: "success" });
-});
-
 // Endpoint to handle Midtrans payment notifications
 app.post("/payment-notification-handler", async (req, res) => {
-  const data = req.body;
+  const listTrans = await Transaction.find();
+  listTrans.map(async (l) => {
+    const url = "https://api.sandbox.midtrans.com/v2" + `/${l.order_id}/status`;
+    const data = (
+      await axios.get(url, {
+        auth: {
+          username: "SB-Mid-server-ZCktv1JIy74Z0J9kPErDHJ77",
+          password: "",
+        },
+      })
+    ).data;
 
-  try {
-    const transaction = await Transaction.findOne({ order_id: data.order_id });
-
-    if (!transaction) {
-      console.log(`Transaction with order_id ${data.order_id} not found.`);
+    if (data.status_code == "404") {
       return;
     }
 
-    transaction.status = data.transaction_status;
+    try {
+      const transaction = await Transaction.findOne({
+        order_id: data.order_id,
+      });
 
-    await transaction.save();
+      if (!transaction) {
+        console.log(`Transaction with order_id ${data.order_id} not found.`);
+        return;
+      }
 
-    console.log(
-      `Transaction with order_id ${data.order_id} updated successfully.`
-    );
-  } catch (error) {
-    console.error("Error handling payment notification:", error);
-  }
+      transaction.status = data.transaction_status;
+
+      await transaction.save();
+
+      console.log(
+        `Transaction with order_id ${data.order_id} updated successfully.`
+      );
+
+      if (
+        data.transaction_status === "capture" ||
+        data.transaction_status === "settlement"
+      ) {
+        const newKursus = {
+          kursus: transaction.kursus,
+          last_progress: 1,
+          current_index: 1,
+          nilai_quiz: [],
+        };
+        const finduser = await User.findOne({ _id: transaction.user });
+        var sudahenroll = false;
+
+        finduser.listkursus.map((lk) => {
+          if (lk.kursus == newKursus.kursus) {
+            sudahenroll = true;
+          }
+        });
+
+        if (!sudahenroll) {
+          const pushKursus = await User.updateOne(
+            { _id: transaction.user },
+            { $push: { listkursus: newKursus } }
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error handling payment notification:", error);
+    }
+  });
 
   res.status(200).json({ status: "success" });
 });
 
 app.listen(port, async () => {
   try {
-    await mongoose.connect("mongodb+srv://innospherelearn:zrH4tcc14pJFHd7L@cluster0.ywcvlcm.mongodb.net/?retryWrites=true&w=majority");
+    await mongoose.connect(
+      "mongodb+srv://innospherelearn:zrH4tcc14pJFHd7L@cluster0.ywcvlcm.mongodb.net/?retryWrites=true&w=majority"
+    );
     console.log("Database connectede");
   } catch (e) {
     console.log("Error database connection \n", e);
